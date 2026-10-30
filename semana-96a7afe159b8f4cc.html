@@ -8,7 +8,7 @@
 <style>
 :root{
   --bg:#f5efe6; --card:#fffaf3; --ink:#2b2420; --muted:#6f6359; --line:#e3d7c6;
-  --accent:#b0532c; --accent-soft:#f3dccd; --sage:#3f6b5c; --sage-soft:#dbe7e1;
+  --accent:#b0532c; --accent-soft:#f3dccd; --sage:#3f6b5c; --sage-soft:#dbe7e1; --gold:#e9b949;
   --shadow:0 1px 2px rgba(60,40,20,.06),0 8px 24px rgba(60,40,20,.06);
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -17,13 +17,13 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#1a1613; --card:#241f1b; --ink:#efe6da; --muted:#a8998a; --line:#3a312a;
-    --accent:#e08b60; --accent-soft:#3d2a20; --sage:#8fbfae; --sage-soft:#24332d;
+    --accent:#e08b60; --accent-soft:#3d2a20; --sage:#8fbfae; --sage-soft:#24332d; --gold:#d4a73c;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
   }
 }
 :root[data-theme="dark"]{
   --bg:#1a1613; --card:#241f1b; --ink:#efe6da; --muted:#a8998a; --line:#3a312a;
-  --accent:#e08b60; --accent-soft:#3d2a20; --sage:#8fbfae; --sage-soft:#24332d;
+  --accent:#e08b60; --accent-soft:#3d2a20; --sage:#8fbfae; --sage-soft:#24332d; --gold:#d4a73c;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box}
@@ -92,6 +92,24 @@ canvas{width:100%;height:320px;background:var(--card);border:1px solid var(--lin
 .dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
 .dots i.on{background:var(--accent)}
 .rankbadge{background:var(--accent);border-color:var(--accent)!important}
+.cover{text-align:center;padding:12px 0 8px}
+.cover .crown{width:96px;height:auto;margin:0 auto 10px;display:block;animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px) rotate(-2deg)}}
+@media (prefers-reduced-motion: reduce){.cover .crown{animation:none}}
+.cover .kicker{margin-bottom:2px}
+.aka{font-family:var(--serif);font-size:18px;color:var(--muted);margin:0 0 14px}
+.aka em{color:var(--accent)}
+.sub{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:18px;margin:0}
+.decree{margin:26px 0;background:var(--card);border:1px dashed var(--accent);border-radius:var(--r);padding:18px 18px 16px}
+.decree-h{font-weight:700;margin:0 0 6px;color:var(--accent)}
+.decree ol{margin:0;padding-left:1.3em}
+.decree li{margin:.45em 0}
+.letter{position:relative;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:26px 22px 22px;box-shadow:var(--shadow);font-family:var(--serif);font-size:18.5px;line-height:1.65}
+.letter::after{content:"♥";position:absolute;top:-16px;right:20px;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:17px;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.letter p{margin:0 0 .8em}
+.letter-h{font-style:italic;font-size:21px}
+.letter .sign{text-align:right;font-style:italic;margin:1.2em 0 0}
+.letter .sign span{color:var(--accent)}
 /* results */
 .res section{margin:36px 0}
 .res h2{margin-top:0}
@@ -486,7 +504,7 @@ const AXES = [
    ========================================================= */
 const KEY = "una-semana-cualquiera-v1";
 let S = blank();
-function blank(){ return {version:1, startedAt:null, finishedAt:null, name:"", screen:"intro", idx:0, answers:{}, order:{}, reflections:{}}; }
+function blank(){ return {version:1, startedAt:null, finishedAt:null, name:"Celia", screen:"intro", idx:0, answers:{}, order:{}, reflections:{}}; }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 function load(){ try{ const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
 function wipe(){ try{ localStorage.removeItem(KEY); }catch(e){} }
@@ -554,29 +572,58 @@ function renderIntro(){
   const prev = load();
   const resumable = prev && prev.startedAt && (prev.screen==="scene" || prev.screen==="end" || prev.screen==="results");
   app.innerHTML = `<div class="scene">
-    <p class="kicker">Una historia interactiva</p>
-    <h1>Una semana cualquiera</h1>
-    <p class="story">Vas a vivir una semana imaginaria hecha de momentos pequeños: un lunes en el trabajo, un imprevisto, una cena, un rato libre, un domingo por la noche. En cada uno, elige lo que harías tú. No lo que estaría bien hacer.</p>
+    <div class="cover">
+      <svg class="crown" viewBox="0 0 120 70" aria-hidden="true">
+        <path d="M10 58 L18 18 L40 40 L60 8 L80 40 L102 18 L110 58 Z" fill="var(--gold)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="18" cy="16" r="5" fill="var(--accent)"/><circle cx="60" cy="7" r="6" fill="var(--accent)"/><circle cx="102" cy="16" r="5" fill="var(--accent)"/>
+        <rect x="10" y="56" width="100" height="10" rx="3" fill="var(--ink)"/>
+      </svg>
+      <p class="kicker">Para Celia Vico López</p>
+      <p class="aka">alias <em>La Princesa Libritos</em></p>
+      <h1>Una semana cualquiera</h1>
+      <p class="sub">Una historia en cinco días en la que la protagonista eres tú.</p>
+    </div>
+
+    <div class="decree">
+      <p class="decree-h">📜 Real decreto, de obligado cumplimiento</p>
+      <p class="small muted" style="margin:0 0 8px">Por orden de Su Alteza La Princesa Libritos, durante esta historia queda terminantemente prohibido:</p>
+      <ol>
+        <li>Responder lo que «quedaría bien». Aquí se responde lo que harías de verdad, aunque sea quedarte en la cama.</li>
+        <li>Pensar cada respuesta como si fuera el examen final de la carrera. El reino tiene prisa y nadie va a poner nota.</li>
+        <li>Saltar al final del libro para ver cómo acaba. Sí, ya sabemos que lo haces.</li>
+        <li>Tomarse esto demasiado en serio. Bueno, solo un poquito.</li>
+      </ol>
+      <p class="small muted" style="margin:8px 0 0">Duración aproximada: 20–25 minutos, lo que dura un capítulo de los cortos. Con una mantita, mejor.</p>
+    </div>
+
+    <div class="letter">
+      <p class="letter-h">Celia:</p>
+      <p>Antes de empezar, una cosa. No hace falta que sepas ya lo que quieres. Las personas más interesantes que conozco todavía se están descubriendo, y tú eres, de lejos, la más interesante de todas.</p>
+      <p>Te he visto perderte dentro de una historia hasta olvidarte del mundo. Esa forma tuya de mirar, curiosa, atenta y con el corazón abierto, no se aprende: es tuya. Y merece un lugar donde brillar, sea el que sea. Ese lugar no lo tiene que elegir nadie más que tú.</p>
+      <p>Esto no es un examen. Es solo una excusa para que te mires durante un rato con el mismo cariño con el que yo te miro cada día.</p>
+      <p>Pase lo que pase al final, ya tienes a alguien en tu equipo. Para siempre.</p>
+      <p class="sign">Con todo mi amor,<br>tu fan número uno <span aria-hidden="true">♥</span></p>
+    </div>
+
+    <h3 style="margin-top:30px">Cómo funciona</h3>
     <ul class="clean">
-      <li>No hay respuestas correctas ni incorrectas. Si ninguna opción encaja del todo, elige la que más se acerque.</li>
+      <li>Vas a vivir una semana imaginaria hecha de momentos pequeños. En cada uno, elige lo que harías tú. Si ninguna opción encaja del todo, la que más se acerque.</li>
       <li>A veces te pedirá escribir unas líneas o crear algo en tres minutos.</li>
-      <li>Dura unos 20–25 minutos. Puedes parar cuando quieras: se guarda en este dispositivo.</li>
+      <li>Puedes parar cuando quieras: se guarda en este dispositivo.</li>
       <li>Al final verás qué patrones aparecieron y algunas preguntas para seguir pensando, si te apetece.</li>
     </ul>
     <div class="note" style="margin:20px 0"><strong>Privacidad.</strong> Todo ocurre en este navegador. Nada se envía a ningún sitio. Se guardan tus elecciones, lo que escribas y cuánto tiempo pasas en cada escena, solo aquí. Al final puedes descargar una copia o borrarlo todo.</div>
     ${resumable ? `
       <div class="actions"><button class="btn accent" id="resume">Continuar donde lo dejaste</button><button class="ghost" id="restart">Empezar de nuevo</button></div>
     ` : `
-      <label for="nm" class="small muted">¿Cómo quieres que te llame? (opcional)</label>
-      <input type="text" id="nm" autocomplete="off" maxlength="40" style="margin-top:6px">
-      <div class="actions"><button class="btn accent" id="start">Empezar el lunes</button></div>
+      <div class="actions"><button class="btn accent" id="start">Abrir el libro 📖</button></div>
     `}
   </div>`;
   if(resumable){
     $("#resume").onclick = ()=>{ S = prev; render(); };
     $("#restart").onclick = ()=>{ if(confirm("Se borrarán las respuestas guardadas en este dispositivo. ¿Empezar de nuevo?")){ wipe(); S=blank(); render(); } };
   } else {
-    $("#start").onclick = ()=>{ S = blank(); S.name = $("#nm").value.trim(); S.startedAt = new Date().toISOString(); go(0); };
+    $("#start").onclick = ()=>{ S = blank(); S.startedAt = new Date().toISOString(); go(0); };
   }
 }
 
