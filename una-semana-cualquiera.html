@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Una semana cualquiera</title>
+<style>
+:root{
+  --bg:#f5efe6; --card:#fffaf3; --ink:#2b2420; --muted:#6f6359; --line:#e3d7c6;
+  --accent:#b0532c; --accent-soft:#f3dccd; --sage:#3f6b5c; --sage-soft:#dbe7e1;
+  --shadow:0 1px 2px rgba(60,40,20,.06),0 8px 24px rgba(60,40,20,.06);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1a1613; --card:#241f1b; --ink:#efe6da; --muted:#a8998a; --line:#3a312a;
+    --accent:#e08b60; --accent-soft:#3d2a20; --sage:#8fbfae; --sage-soft:#24332d;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1a1613; --card:#241f1b; --ink:#efe6da; --muted:#a8998a; --line:#3a312a;
+  --accent:#e08b60; --accent-soft:#3d2a20; --sage:#8fbfae; --sage-soft:#24332d;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;min-height:100vh}
+.wrap{max-width:660px;margin:0 auto;padding:16px 16px 72px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 14px;min-height:44px}
+.brand{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:15px}
+.days{display:flex;gap:6px;align-items:center}
+.day{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);opacity:.45;transition:opacity .3s}
+.day.on{opacity:1;color:var(--accent);font-weight:600}
+.day.done{opacity:.8}
+.day+.day::before{content:"·";margin-right:6px;color:var(--line)}
+.backbtn{background:none;border:0;color:var(--muted);font:inherit;font-size:14px;padding:8px 0;cursor:pointer}
+.backbtn:hover{color:var(--ink)}
+.scene{animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.scene{animation:none}}
+.kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:8px 0 6px}
+h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.2;margin:0 0 .5em}
+h1{font-size:clamp(32px,8vw,46px)}
+h2{font-size:clamp(24px,6vw,30px)}
+h3{font-size:20px}
+.story{font-family:var(--serif);font-size:clamp(19px,4.6vw,21px);line-height:1.6;margin:0 0 22px}
+.story em{color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.opts{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.opt{width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;font:inherit;color:inherit;cursor:pointer;display:flex;gap:12px;align-items:flex-start;transition:border-color .2s,transform .15s,background .2s;box-shadow:var(--shadow)}
+.opt:hover{border-color:var(--accent)}
+.opt:active{transform:scale(.99)}
+.opt:focus-visible,.btn:focus-visible,.ghost:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt .mark{flex:0 0 22px;height:22px;border-radius:50%;border:1.5px solid var(--line);margin-top:1px;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--card)}
+.opt.sel .mark{background:var(--accent);border-color:var(--accent)}
+.opt.multi .mark{border-radius:6px}
+.opt[disabled]{opacity:.45;cursor:not-allowed}
+.hint{font-size:14px;color:var(--muted);margin:-8px 0 14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:13px 24px;font:inherit;font-weight:600;cursor:pointer;min-height:48px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.accent{background:var(--accent);color:#fff}
+.ghost{background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:11px 18px;font:inherit;cursor:pointer;min-height:44px}
+.ghost:hover{border-color:var(--ink)}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;font-size:14px;cursor:pointer;padding:8px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+textarea,input[type=text]{width:100%;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;font:inherit;font-family:var(--serif);font-size:18px;line-height:1.55;resize:vertical}
+textarea{min-height:150px}
+.paper{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.note{background:var(--sage-soft);border-radius:var(--r);padding:14px 16px;font-size:15px;color:var(--ink)}
+.note strong{color:var(--sage)}
+ul.clean{padding-left:1.1em;margin:.6em 0}
+ul.clean li{margin:.3em 0}
+.timer{font-variant-numeric:tabular-nums;font-size:15px;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.timer .bar{flex:1;height:4px;background:var(--line);border-radius:4px;overflow:hidden}
+.timer .bar i{display:block;height:100%;background:var(--accent);transition:width 1s linear}
+canvas{width:100%;height:320px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);touch-action:none;display:block}
+.tools{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.swatch{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);cursor:pointer}
+.swatch.on{border-color:var(--ink)}
+.planlist{display:flex;flex-direction:column;gap:8px;counter-reset:p}
+.planlist input{font-size:17px}
+.pair{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.pair{grid-template-columns:1fr 1fr}}
+.door{min-height:110px;align-items:center;justify-content:center;text-align:center;font-family:var(--serif);font-size:18px}
+.dots{display:flex;gap:6px;justify-content:center;margin:16px 0 0}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)}
+.rankbadge{background:var(--accent);border-color:var(--accent)!important}
+/* results */
+.res section{margin:36px 0}
+.res h2{margin-top:0}
+.bars{display:flex;flex-direction:column;gap:10px}
+.barrow{display:grid;grid-template-columns:96px 1fr 34px;gap:10px;align-items:center;font-size:15px}
+.barrow .t{height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.barrow .t i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.barrow.lo .t i{background:var(--muted);opacity:.5}
+.barrow .n{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
+.axis{margin:14px 0}
+.axis .lbl{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin-bottom:6px}
+.axis .track{position:relative;height:6px;background:var(--line);border-radius:6px}
+.axis .track b{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);border:3px solid var(--card)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);margin:14px 0}
+.card h3{margin-bottom:.35em}
+.card .row{margin:.7em 0 0}
+.card .row b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{background:var(--accent-soft);border-radius:10px;padding:4px 10px;font-size:13.5px;line-height:1.35}
+.chip.sage{background:var(--sage-soft)}
+.q{margin:18px 0}
+.q p{font-family:var(--serif);font-size:18px;margin:0 0 8px}
+.q textarea{min-height:100px;font-size:17px}
+.quote{font-family:var(--serif);font-style:italic;border-left:3px solid var(--accent);padding-left:12px;margin:8px 0;color:var(--ink)}
+table.mini{width:100%;border-collapse:collapse;font-size:14px}
+table.mini td,table.mini th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.mini th{font-weight:600;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.drawing{max-width:100%;border-radius:var(--r);border:1px solid var(--line);background:#fff}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.toc a{font-size:13.5px;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+.saved{font-size:13px;color:var(--sage);min-height:1.2em}
+footer.f{margin-top:48px;font-size:13px;color:var(--muted);text-align:center}
+@media print{
+  body{background:#fff;color:#000;font-size:12pt}
+  header.top,.actions,.noprint,.toc{display:none!important}
+  .card,.paper{box-shadow:none;break-inside:avoid}
+  textarea{border:1px solid #bbb;min-height:0;height:auto}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top" id="top"></header>
+  <main id="app" aria-live="polite"></main>
+  <footer class="f noprint">Funciona sin conexión. Nada sale de este dispositivo salvo que tú lo descargues.</footer>
+</div>
+
+<script>
+"use strict";
+/* =========================================================
+   CONTENIDO DE LA HISTORIA
+   Las etiquetas (tags) nunca se muestran durante la experiencia.
+   Dominios: P personas · I comprender · E expresar · S ordenar · M hacer/materia · A impulsar
+   Valores: vJus vCui vBel vAut vSeg vRec vApr vImp vArm
+   Estilo: soc/sol, nov/pro, pla/imp, lid/obs, log (resultado rápido)
+   Conflicto: cDir cPriv cInd cEvi cMed cAco · Energía: dsm, flow
+   ========================================================= */
+const DAYS = ["Lunes","Miércoles","Viernes","Sábado","Domingo"];
+
+const SCENES = [
+  {type:"chapter", id:"ch_lunes", day:"Lunes", title:"Empieza la semana",
+   text:"Todavía es temprano. La semana está por estrenar y aún no sabe nada de ti."},
+
+  {type:"choice", id:"despertar", day:"Lunes",
+   text:"Suena la alarma. Antes de levantarte te concedes un minuto más bajo las sábanas. ¿Hacia dónde se te va la cabeza?",
+   options:[
+    {label:"A todo lo que tengo que hacer hoy, más o menos en orden.", tags:{S:2,pla:1,vSeg:1}},
+    {label:"A algo que leí o vi anoche y que no termino de entender.", tags:{I:2,pro:1,vApr:1}},
+    {label:"A una conversación pendiente con alguien.", tags:{P:2,vCui:1}},
+    {label:"A nada concreto: una imagen suelta, una canción, un resto de sueño.", tags:{E:2,imp:1}},
+    {label:"A cuántos días faltan para el fin de semana.", tags:{dsm:2}},
+    {label:"A un plan que me gustaría empezar algún día.", tags:{A:1,vAut:1,nov:1}}
+   ]},
+
+  {type:"choice", id:"bandeja", day:"Lunes",
+   text:"Llegas al trabajo veinte minutos antes de una reunión. Hay varias cosas abiertas en tu pantalla, pero solo da tiempo a hacer una de verdad.",
+   options:[
+    {label:"Un compañero nuevo te ha escrito: está perdido con una tarea y no se atreve a preguntar en público.", tags:{P:2,vCui:2}},
+    {label:"Un documento lleno de pequeñas incoherencias que nadie más va a notar. Tú sí.", tags:{S:2,pro:1}},
+    {label:"Un informe sobre un tema que no conoces y que no es asunto tuyo, pero te intriga.", tags:{I:2,nov:1,vApr:1}},
+    {label:"Organizar tu semana para que no te vuelva a pasar lo de la anterior.", tags:{S:1,pla:2,vSeg:1}},
+    {label:"Preparar lo que vas a decir en la reunión para que tu propuesta salga adelante.", tags:{A:2,lid:1,vRec:1}}
+   ]},
+
+  {type:"choice", id:"reunion", day:"Lunes",
+   text:"En la reunión, una colega presenta un plan. Tú ves claro un fallo: si sigue adelante, a otro equipo le tocará arreglar el problema. Nadie dice nada. Ella parece muy segura.",
+   options:[
+    {label:"Lo digo en ese momento, con tacto.", tags:{cDir:2,vJus:1,lid:1}},
+    {label:"Espero y se lo comento a solas después.", tags:{cPriv:2,vCui:1}},
+    {label:"Hago una pregunta que la lleve a verlo por sí misma.", tags:{cInd:2,I:1}},
+    {label:"Aviso discretamente al otro equipo para que estén preparados.", tags:{cMed:1,vJus:1,P:1}},
+    {label:"No digo nada: no es mi proyecto y no quiero quedar mal.", tags:{cEvi:2}},
+    {label:"Propongo una mejora sin mencionar el fallo directamente.", tags:{cAco:1,cInd:1,E:1}}
+   ]},
+
+  {type:"text", id:"mensaje", day:"Lunes",
+   text:(A)=> (A.reunion && A.reunion.tags && A.reunion.tags.cEvi)
+     ? "Esa tarde cambias de idea y decides escribirle un mensaje breve a tu colega. Escríbelo tal como lo enviarías."
+     : "Termina la reunión. Decides escribirle a tu colega un mensaje breve sobre lo que viste. Escríbelo tal como lo enviarías.",
+   placeholder:"Hola…"},
+
+  {type:"choice", id:"enviar", day:"Lunes",
+   text:"Miras el mensaje antes de pulsar «enviar».",
+   options:[
+    {label:"Lo envío tal cual.", tags:{cDir:1,imp:1}},
+    {label:"Lo releo un par de veces más y cambio alguna palabra.", tags:{pro:1,vCui:1}},
+    {label:"Lo guardo para mañana, con la cabeza fría.", tags:{pla:1,cPriv:1}},
+    {label:"Lo borro. Prefiero decírselo en persona.", tags:{P:1,cPriv:1}},
+    {label:"Lo borro. Mejor no remover nada.", tags:{cEvi:2}}
+   ]},
+
+  {type:"choice", id:"almuerzo", day:"Lunes",
+   text:"Hora de comer. Tienes cuarenta minutos.",
+   options:[
+    {label:"Como sola con un libro, un pódcast o simplemente mirando por la ventana.", tags:{sol:2,obs:1}},
+    {label:"Me siento con el grupo de siempre.", tags:{soc:1,vArm:1}},
+    {label:"Pruebo un sitio nuevo que vi de camino.", tags:{nov:2}},
+    {label:"Aprovecho para un trámite que llevo semanas posponiendo.", tags:{S:1,log:2}},
+    {label:"Una compañera parece tener un mal día. La invito a comer conmigo.", tags:{P:2,vCui:2}},
+    {label:"Salgo a caminar sin rumbo; necesito aire.", tags:{M:1,sol:1,dsm:1}}
+   ]},
+
+  {type:"chapter", id:"ch_miercoles", day:"Miércoles", title:"Lo que no estaba previsto",
+   text:"A mitad de semana los planes empiezan a torcerse un poco."},
+
+  {type:"choice", id:"tren", day:"Miércoles",
+   text:"Cancelan tu tren. El siguiente sale dentro de una hora y diez minutos. Estás en una estación que apenas conoces.",
+   options:[
+    {label:"Busco en el mapa la ruta alternativa más rápida.", tags:{S:1,pla:1,A:1,log:1}},
+    {label:"Me siento a mirar a la gente e imagino de dónde viene cada uno.", tags:{E:2,obs:2}},
+    {label:"Salgo a dar una vuelta por el barrio a ver qué encuentro.", tags:{nov:2,I:1}},
+    {label:"Una señora no entiende el panel de horarios. Me acerco a ayudarla.", tags:{P:2,vCui:2}},
+    {label:"Saco el portátil y adelanto trabajo.", tags:{S:1,vSeg:1,log:1}},
+    {label:"Voy al mostrador a reclamar: alguien debería responder por esto.", tags:{vJus:2,cDir:1,A:1}}
+   ]},
+
+  {type:"multi", id:"pestanas", day:"Miércoles", max:3,
+   text:"Esa noche, ya en casa, tienes muchas pestañas abiertas en el teléfono. Solo te da tiempo a abrir tres antes de dormir.",
+   hint:"Elige hasta tres.",
+   options:[
+    {label:"Cómo deciden las abejas dónde construir su colmena", tags:{I:2,M:1}},
+    {label:"Restauración de un mueble de 1920, paso a paso", tags:{M:2,pro:1}},
+    {label:"Las cartas que un escritor nunca llegó a enviar", tags:{E:2,P:1}},
+    {label:"Por qué quebró una empresa que parecía invencible", tags:{A:1,S:1,I:1}},
+    {label:"Una jueza cuenta el caso que le quitó el sueño", tags:{vJus:2,I:1}},
+    {label:"Qué ocurre en el cerebro cuando mentimos", tags:{I:1,P:1}},
+    {label:"Un pueblo que se salvó organizándose entre vecinos", tags:{A:1,P:1,vImp:2}},
+    {label:"Cómo se diseña la tipografía de un libro", tags:{E:1,S:1,vBel:1}},
+    {label:"Recetas de un monasterio del siglo XII", tags:{M:1,E:1,pro:1}},
+    {label:"Gente que empezó de cero en otra ciudad", tags:{nov:1,vAut:2}}
+   ]},
+
+  {type:"choice", id:"vecina", day:"Miércoles",
+   text:"Al subir a casa, tu vecina del tercero te para en la escalera. Lleva una carta en la mano y cara de preocupación: «¿Tú entiendes esto? Es del banco».",
+   options:[
+    {label:"La leo con ella ahí mismo y se la explico con calma.", tags:{P:1,I:1,vCui:1}},
+    {label:"Le propongo llamar juntas al banco; hablo yo si hace falta.", tags:{A:1,P:1,vJus:1,cDir:1}},
+    {label:"Le enseño a leer este tipo de cartas para que la próxima vez no dependa de nadie.", tags:{P:2,vApr:1,vAut:1}},
+    {label:"Primero le pregunto cómo está. La carta puede esperar un minuto.", tags:{P:2,vCui:2}},
+    {label:"Le digo que no estoy segura y le paso el contacto de alguien que sepa más.", tags:{cEvi:1,vSeg:1}},
+    {label:"Me la llevo, la reviso con calma y se la devuelvo con notas.", tags:{S:1,sol:1,pro:1}}
+   ]},
+
+  {type:"text", id:"nota", day:"Miércoles",
+   text:"Al día siguiente te acuerdas de ella y decides dejarle una nota en el buzón. Escríbela.",
+   placeholder:"Querida vecina…"},
+
+  {type:"chapter", id:"ch_viernes", day:"Viernes", title:"Gente",
+   text:"Llega el viernes, y con él, los demás."},
+
+  {type:"choice", id:"cena", day:"Viernes",
+   text:"Una amiga te invita a cenar en casa de unos conocidos suyos. No conocerás a casi nadie.",
+   options:[
+    {label:"Voy, y me ofrezco a ayudar en la cocina: así tengo un lugar.", tags:{P:1,M:1,obs:1}},
+    {label:"Voy, y me quedo cerca de mi amiga hasta sentirme cómoda.", tags:{obs:2}},
+    {label:"Voy con curiosidad: me gusta escuchar historias nuevas.", tags:{soc:2,nov:1,P:1}},
+    {label:"Pongo una excusa. Me apetece una noche tranquila.", tags:{sol:2}},
+    {label:"Voy, pero me guardo la opción de irme pronto.", tags:{sol:1,obs:1}}
+   ]},
+
+  {type:"text", id:"dedicas", day:"Viernes",
+   text:"En la cena, alguien te sirve una copa y te pregunta con una sonrisa: «¿Y tú a qué te dedicas?». Escribe lo que responderías de verdad, no lo que deberías responder.",
+   placeholder:"Pues…"},
+
+  {type:"choice", id:"conversacion", day:"Viernes",
+   text:"La noche avanza. Te descubres hablando con más ganas de lo que esperabas. ¿Sobre qué?",
+   options:[
+    {label:"Sobre un libro, una película o una serie que me removió.", tags:{E:2}},
+    {label:"Sobre algo injusto que está pasando y que me indigna.", tags:{vJus:2,A:1}},
+    {label:"Sobre un viaje o un lugar que me marcó.", tags:{nov:2}},
+    {label:"En realidad, escuchando la historia de otra persona y haciendo preguntas.", tags:{P:2,obs:1}},
+    {label:"Sobre cómo funciona algo: una idea, un sistema, una máquina.", tags:{I:2,S:1}},
+    {label:"Sobre un proyecto o una idea que podría ponerse en marcha.", tags:{A:2}},
+    {label:"Sobre algo que hice con las manos: cocina, plantas, un arreglo.", tags:{M:2}}
+   ]},
+
+  {type:"choice", id:"viaje", day:"Viernes",
+   text:"De vuelta a casa, en el chat de tus amigas alguien propone un viaje de fin de semana. Empieza el caos de mensajes. Sin pensarlo mucho, tú…",
+   options:[
+    {label:"Investigo destinos y comparto tres opciones bien pensadas.", tags:{I:1,S:1,pla:1}},
+    {label:"Hago una tabla con fechas y presupuesto para ordenar el caos.", tags:{S:2,pla:1}},
+    {label:"Propongo algo que nadie esperaba.", tags:{E:1,nov:2,lid:1}},
+    {label:"Me aseguro de que las que siempre ceden esta vez también elijan.", tags:{P:1,vJus:1,cMed:2}},
+    {label:"Me apunto a lo que decidan: el destino me da igual si vamos juntas.", tags:{cAco:1,vArm:2}},
+    {label:"Me ofrezco a reservar y encargarme de todo.", tags:{A:1,S:1,lid:1}}
+   ]},
+
+  {type:"choice", id:"decirno", day:"Viernes",
+   text:"Ya tarde, otra amiga te escribe: necesita que el domingo la ayudes con su mudanza. Tú tenías ese día reservado solo para ti.",
+   options:[
+    {label:"Le digo que no, explicándole con sinceridad que necesito ese día.", tags:{vAut:2,cDir:1}},
+    {label:"Le digo que sí. Ya descansaré otro día.", tags:{cAco:2,vCui:1}},
+    {label:"Le propongo otra forma de ayudar: unas horas, o el sábado.", tags:{cMed:2,pla:1}},
+    {label:"Tardo en contestar porque no sé cómo decirle que no.", tags:{cEvi:2}},
+    {label:"Le busco a alguien que pueda echarle una mano.", tags:{S:1,P:1,A:1}}
+   ]},
+
+  {type:"chapter", id:"ch_sabado", day:"Sábado", title:"Un rato para ti",
+   text:"El sábado amanece sin obligaciones. O casi."},
+
+  {type:"choice", id:"lampara", day:"Sábado",
+   text:"La lámpara que heredaste de tu abuela deja de funcionar. Tiene un cable pelado y una pieza suelta.",
+   options:[
+    {label:"Busco un vídeo y la arreglo yo.", tags:{M:2,vAut:1}},
+    {label:"La llevo a un taller y aprovecho para preguntar cómo funciona por dentro.", tags:{I:1,P:1,M:1}},
+    {label:"La convierto en otra cosa: un macetero, una pieza decorativa, algo nuevo.", tags:{E:2,M:1,imp:1}},
+    {label:"La guardo hasta dar con alguien de confianza que sepa arreglarla.", tags:{vSeg:1,P:1}},
+    {label:"Me compro otra parecida. No merece la pena el lío.", tags:{log:1}},
+    {label:"La dejo así. Rota también tiene su historia.", tags:{E:1,vBel:1,obs:1}}
+   ]},
+
+  {type:"create", id:"crear", day:"Sábado", seconds:180,
+   text:"Antes de salir tienes un rato. Durante tres minutos vas a hacer algo con lo que tengas a mano. No tiene que salir bien: nadie más tiene que verlo. ¿Cómo prefieres hacerlo?",
+   modes:[
+    {id:"escribir", label:"Escribir", desc:"Unas líneas sobre lo que ves por la ventana, o lo que te gustaría ver.", tags:{E:1}},
+    {id:"dibujar", label:"Dibujar", desc:"Lo que quieras, con el dedo o el ratón. Garabatos incluidos.", tags:{E:1,M:1}},
+    {id:"planear", label:"Planear", desc:"Cinco pasos para mejorar algo pequeño de tu casa o de tu barrio.", tags:{S:1,A:1}},
+    {id:"inventar", label:"Inventar", desc:"Un objeto, servicio o lugar que no exista. Su nombre y para qué sirve.", tags:{I:1,E:1,A:1}}
+   ]},
+
+  {type:"choice", id:"flujo", day:"Sábado",
+   text:"Mientras lo hacías, el tiempo…",
+   options:[
+    {label:"Se me pasó volando.", tags:{flow:2}},
+    {label:"Me costó arrancar, pero luego fluyó.", tags:{flow:1}},
+    {label:"Pasó normal.", tags:{}},
+    {label:"Se me hizo largo.", tags:{flow:-1}}
+   ], noShuffle:true},
+
+  {type:"multi", id:"aprender", day:"Sábado", max:2,
+   text:"Por la tarde recibes un regalo inesperado: dinero suficiente para dedicar seis meses a aprender algo. Con una condición: tiene que ser algo que todavía no domines.",
+   hint:"Elige hasta dos.",
+   options:[
+    {label:"Cerámica", tags:{M:2,E:1}},
+    {label:"Programación", tags:{S:2,I:1}},
+    {label:"Psicología", tags:{P:1,I:2}},
+    {label:"Un idioma muy lejano", tags:{nov:1,I:1,P:1}},
+    {label:"Carpintería", tags:{M:2}},
+    {label:"Fotografía", tags:{E:2,obs:1}},
+    {label:"Mediación de conflictos", tags:{P:2,vArm:1,cMed:1}},
+    {label:"Cocina profesional", tags:{M:2,E:1}},
+    {label:"Botánica y jardinería", tags:{M:2,I:1}},
+    {label:"Guion y narración", tags:{E:2}},
+    {label:"Finanzas e inversión", tags:{S:2,A:1}},
+    {label:"Teatro e improvisación", tags:{E:1,soc:2}},
+    {label:"Diseño gráfico", tags:{E:2,S:1}},
+    {label:"Primeros auxilios y cuidados", tags:{P:2,vCui:2,M:1}},
+    {label:"Montar un negocio propio", tags:{A:2,vAut:1}},
+    {label:"Historia del arte", tags:{I:1,E:1,pro:1}}
+   ]},
+
+  {type:"rank", id:"voluntariado", day:"Sábado", top:3,
+   text:"Te llega un correo: tu empresa regala a cada persona un día pagado para hacer voluntariado. Estas son las opciones. Toca, por orden, las tres que más te apetecen.",
+   options:[
+    {label:"Dar un taller a adolescentes sobre algo que sabes hacer", tags:{P:2,vImp:1,lid:1}},
+    {label:"Poner en orden el archivo caótico de una ONG pequeña", tags:{S:2,vImp:1}},
+    {label:"Diseñar el cartel y los textos de una campaña", tags:{E:2}},
+    {label:"Acompañar a personas mayores en una residencia", tags:{P:2,vCui:2}},
+    {label:"Investigar la historia olvidada de un edificio del barrio", tags:{I:2,pro:1}},
+    {label:"Plantar un huerto comunitario", tags:{M:2,soc:1}},
+    {label:"Negociar con el ayuntamiento en nombre de una asociación vecinal", tags:{A:2,vJus:1,cDir:1}}
+   ]},
+
+  {type:"chapter", id:"ch_domingo", day:"Domingo", title:"Dos puertas",
+   text:"Domingo por la tarde. La semana se va cerrando."},
+
+  {type:"pairs", id:"puertas", day:"Domingo",
+   text:"Te imaginas en un pasillo largo con puertas, de dos en dos. Detrás de cada una hay un trabajo distinto. Elige rápido, sin pensarlo demasiado.",
+   pairs:[
+    [{label:"Horario fijo y sueldo estable", tags:{vSeg:2}}, {label:"Un proyecto propio, libre pero incierto", tags:{vAut:2,A:1}}],
+    [{label:"Un equipo que cuenta contigo", tags:{soc:2,P:1}}, {label:"Trabajar sola, a tu ritmo", tags:{sol:2,vAut:1}}],
+    [{label:"Resultados visibles cada día", tags:{log:2}}, {label:"Una obra lenta que tarda años", tags:{pro:2}}],
+    [{label:"Que te reconozcan públicamente", tags:{vRec:2}}, {label:"Un efecto invisible, pero real", tags:{vImp:2}}],
+    [{label:"Reglas claras: saber qué se espera de ti", tags:{vSeg:1,S:1}}, {label:"Ambigüedad y libertad para inventar", tags:{vAut:1,E:1,nov:1}}],
+    [{label:"Profundizar en un solo tema toda la vida", tags:{pro:2}}, {label:"Cambiar de tema cada pocos años", tags:{nov:2}}],
+    [{label:"Ayudar a una persona cada vez", tags:{P:1,vCui:1}}, {label:"Cambiar algo que afecta a miles", tags:{vJus:1,vImp:1,S:1}}],
+    [{label:"Crear algo con tus manos", tags:{M:2}}, {label:"Crear algo con tu cabeza", tags:{I:1,E:1}}]
+   ]},
+
+  {type:"choice", id:"domingo", day:"Domingo",
+   text:"Es domingo por la noche. Mañana vuelve a ser lunes. ¿Qué notas, sobre todo?",
+   options:[
+    {label:"Un peso conocido en el pecho.", tags:{dsm:2}},
+    {label:"Nada especial. Es un día más.", tags:{dsm:1}},
+    {label:"Algo de nervios, pero también ganas.", tags:{flow:1}},
+    {label:"Alivio: la rutina me ordena.", tags:{vSeg:1,S:1}},
+    {label:"Ganas de que pase algo distinto.", tags:{nov:1,dsm:1,vAut:1}}
+   ]},
+
+  {type:"text", id:"frase", day:"Domingo",
+   text:"Antes de dormir abres una libreta. Escribe la primera frase que te venga. Cualquier frase.",
+   placeholder:"", short:true}
+];
+
+/* =========================================================
+   CLAVES DE INTERPRETACIÓN (solo se usan al final)
+   ========================================================= */
+const DOM = {
+  P:{name:"Personas", short:"acompañar, explicar, escuchar, enseñar",
+     read:"Muchas de tus decisiones se orientaron hacia otras personas: atenderlas, explicarles, escucharlas. Es posible que una parte importante de tu energía aparezca cuando lo que haces toca a alguien de forma directa.",
+     alt:"También puede reflejar un sentido del deber o la costumbre de ocuparte de los demás, más que algo que te recargue. Desde fuera se parecen; por dentro son muy distintos.",
+     unk:"No sabemos si prefieres el contacto uno a uno o en grupo, ni si después de estar con gente te sientes con más energía o con menos.",
+     exp:"Ofrécete a enseñar o explicar algo a alguien durante una hora. Justo después, anota del 1 al 10 tu energía."},
+  I:{name:"Comprender", short:"investigar, preguntarse cómo funcionan las cosas",
+     read:"Aparece una curiosidad por entender: cómo funcionan las cosas, por qué ocurren, qué hay debajo. Tal vez te mueva más la pregunta que la respuesta.",
+     alt:"La curiosidad puede ser un placer de tiempo libre que no quieres convertir en obligación. O una forma de escapar de un presente que aburre.",
+     unk:"No sabemos si disfrutas investigando a fondo y con método, o picoteando muchos temas; ni si te gustaría compartir lo que descubres.",
+     exp:"Elige una pregunta que te intrigue y dedícale tres ratos de 30 minutos en una semana. Observa si al tercero quieres seguir."},
+  E:{name:"Expresar", short:"imaginar, dar forma, palabras, imágenes, belleza",
+     read:"Tus elecciones se inclinaron hacia lo expresivo: imaginar, dar forma, fijarte en lo bello o en lo que cuenta una historia.",
+     alt:"Disfrutar del arte o de la palabra como lectora o espectadora no implica necesariamente querer producirlo de forma profesional. Aunque podría.",
+     unk:"No sabemos si te atrae más crear desde cero, transformar lo que ya existe, o acompañar y cuidar lo que crean otros.",
+     exp:"Crea algo pequeño durante siete días seguidos, diez minutos al día, sin enseñárselo a nadie. Fíjate en qué día te dio pereza y en cuál te sorprendiste."},
+  S:{name:"Ordenar", short:"estructurar, planificar, cuidar los detalles",
+     read:"Aparece una inclinación a poner orden: estructurar, planificar, corregir lo que no encaja. Puede que te dé satisfacción convertir el caos en algo claro.",
+     alt:"También puede ser una forma de calmar la incertidumbre, o una habilidad muy entrenada (por ejemplo, por tu formación) que se activa sola aunque no te apasione.",
+     unk:"No sabemos si ordenar te da placer o solo alivio, ni si te gusta diseñar sistemas o simplemente que funcionen.",
+     exp:"Ordena algo para otra persona (un archivo, unas cuentas, un proceso). Después pregúntate: ¿disfruté o solo me quedé tranquila?"},
+  M:{name:"Hacer", short:"manos, materia, cuerpo, naturaleza",
+     read:"Hubo varias elecciones ligadas a lo tangible: arreglar, cocinar, plantar, tocar materiales. Quizá necesites que tu esfuerzo deje algo que se pueda ver y tocar.",
+     alt:"Puede ser una necesidad de descanso frente a un trabajo muy abstracto, más que una vocación. Las dos cosas son valiosas, pero no son lo mismo.",
+     unk:"No sabemos qué parte te atrae: el proceso físico, el resultado visible, la calma que da, o estar al aire libre.",
+     exp:"Apúntate a un taller de un solo día de algo manual. Observa cómo está tu cabeza al salir."},
+  A:{name:"Impulsar", short:"tomar la iniciativa, proponer, mover cosas",
+     read:"En varias escenas elegiste tomar la iniciativa: proponer, gestionar, poner en marcha. Puede que te motive ver que algo avanza gracias a ti.",
+     alt:"Puede expresar más un deseo de autonomía, de no depender de decisiones ajenas, que un deseo de liderar a otras personas.",
+     unk:"No sabemos si te atrae impulsar algo propio o mover proyectos dentro de una estructura, ni cuánta exposición estás dispuesta a asumir.",
+     exp:"Lanza una mini-iniciativa con dos o tres personas: un club, una comida, un pequeño proyecto. Fíjate en qué parte disfrutaste y cuál delegarías."}
+};
+
+const VALS = {vJus:"Justicia", vCui:"Cuidado", vBel:"Belleza", vAut:"Autonomía", vSeg:"Seguridad",
+  vRec:"Reconocimiento", vApr:"Aprender", vImp:"Impacto", vArm:"Armonía"};
+
+const CONF = {
+  cDir:{name:"Decirlo de frente", read:"Tiendes a abordar los desacuerdos directamente y en el momento.", alt:"En una situación imaginaria cuesta menos ser directa que en la vida real; puede ser cómo actúas o cómo te gustaría actuar."},
+  cPriv:{name:"En privado, después", read:"Prefieres tratar los desacuerdos a solas, cuidando la exposición de la otra persona.", alt:"Puede ser respeto, prudencia o una forma de esquivar la tensión del momento. Probablemente un poco de todo."},
+  cInd:{name:"Por vías indirectas", read:"Buscas que la otra persona llegue sola a la conclusión, con preguntas o sugerencias.", alt:"Puede ser habilidad diplomática o incomodidad con la confrontación abierta."},
+  cEvi:{name:"Evitar o posponer", read:"Varias veces elegiste no entrar en el conflicto o retrasar la respuesta.", alt:"Evitar no siempre es miedo: a veces es elegir dónde gastar energía. También puede ser timidez situacional, que cambia con la confianza."},
+  cMed:{name:"Buscar terceras vías", read:"Tiendes a buscar soluciones intermedias que tengan en cuenta a todas las partes.", alt:"Puede ser un talento para la negociación o una dificultad para posicionarte claramente."},
+  cAco:{name:"Ceder para cuidar", read:"A menudo elegiste ceder para proteger la relación o el ambiente.", alt:"Puede ser generosidad genuina, o una costumbre de poner tus necesidades en segundo lugar."}
+};
+
+const TERR = {
+  AE:"producción cultural o de eventos, dirección creativa, emprendimiento en diseño o artesanía, comunicación de proyectos",
+  AI:"consultoría, investigación de mercados, periodismo de investigación, innovación dentro de organizaciones",
+  AM:"un negocio de oficio (cocina, restauración, jardinería), proyectos de sostenibilidad, producción",
+  AP:"negociación y mediación, coordinación de equipos, formación de adultos, gestión de personas, incidencia social",
+  AS:"gestión de proyectos, operaciones, gobernanza y cumplimiento, dirección de organizaciones pequeñas",
+  EI:"divulgación, edición, documentación y archivo, diseño de exposiciones, investigación de usuarios",
+  EM:"oficios artísticos (cerámica, encuadernación, restauración), cocina creativa, escenografía, diseño de jardines",
+  EP:"talleres creativos, docencia, facilitación de grupos, comunicación con comunidades, arteterapia (requiere formación)",
+  ES:"diseño editorial o de información, curaduría de contenidos, gestión cultural, diseño de servicios",
+  IM:"ciencias ambientales, botánica, conservación de patrimonio, laboratorio, arqueología",
+  IP:"psicología u orientación (requieren formación), investigación social, trabajo social, experiencia de usuario",
+  IS:"análisis de datos, investigación de políticas públicas, bibliotecas y archivos, documentación técnica",
+  MP:"cuidados y salud, educación al aire libre, cocina comunitaria, terapias corporales (requieren formación), huertos sociales",
+  MS:"logística, oficios técnicos, gestión de espacios, producción, carpintería y fabricación",
+  PS:"coordinación de programas sociales o educativos, gestión de voluntariado, atención y acompañamiento estructurado, recursos humanos"
+};
+
+const AXES = [
+  ["soc","sol","Con otras personas","A solas"],
+  ["nov","pro","Explorar lo nuevo","Profundizar"],
+  ["pla","imp","Planificar","Improvisar"],
+  ["vSeg","vAut","Estabilidad","Autonomía"],
+  ["lid","obs","Tomar la iniciativa","Observar primero"],
+  ["log","pro","Resultados rápidos","Procesos lentos"]
+];
+
+/* =========================================================
+   ESTADO Y ALMACENAMIENTO (solo local)
+   ========================================================= */
+const KEY = "una-semana-cualquiera-v1";
+let S = blank();
+function blank(){ return {version:1, startedAt:null, finishedAt:null, name:"", screen:"intro", idx:0, answers:{}, order:{}, reflections:{}}; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function wipe(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+
+SCENES.forEach(sc=>{
+  (sc.options||[]).forEach((o,i)=>{ o.id = sc.id+"_"+i; });
+  (sc.pairs||[]).forEach((p,i)=>{ p[0].id=sc.id+"_"+i+"a"; p[1].id=sc.id+"_"+i+"b"; });
+});
+
+const $ = s=>document.querySelector(s);
+const app = $("#app");
+const esc = s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const now = ()=>Date.now();
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function orderFor(sc){
+  if(!S.order[sc.id]) S.order[sc.id] = sc.noShuffle ? sc.options.map(o=>o.id) : shuffle(sc.options.map(o=>o.id));
+  return S.order[sc.id].map(id=>sc.options.find(o=>o.id===id));
+}
+function txt(sc){ return typeof sc.text==="function" ? sc.text(S.answers) : sc.text; }
+let sceneStart = now();
+let cleanup = null;
+
+/* =========================================================
+   CABECERA Y NAVEGACIÓN
+   ========================================================= */
+function renderTop(){
+  const t = $("#top");
+  if(S.screen==="scene"){
+    const sc = SCENES[S.idx];
+    const di = DAYS.indexOf(sc.day);
+    t.innerHTML = `<button class="backbtn" id="back" ${S.idx===0?"style='visibility:hidden'":""} aria-label="Escena anterior">‹ Atrás</button>
+      <div class="days" aria-label="Día de la semana">${DAYS.map((d,i)=>`<span class="day ${i===di?"on":i<di?"done":""}">${d.slice(0,3)}</span>`).join("")}</div>`;
+    const b = $("#back"); if(b) b.onclick = ()=>go(S.idx-1);
+  } else {
+    t.innerHTML = `<span class="brand">Una semana cualquiera</span><span></span>`;
+  }
+}
+function go(i){
+  if(cleanup){ cleanup(); cleanup=null; }
+  if(i<0) i=0;
+  if(i>=SCENES.length){ S.screen="end"; save(); render(); return; }
+  S.idx=i; S.screen="scene"; save(); render();
+}
+function next(){ go(S.idx+1); }
+function render(){
+  renderTop();
+  window.scrollTo({top:0});
+  sceneStart = now();
+  if(S.screen==="intro") return renderIntro();
+  if(S.screen==="end") return renderEnd();
+  if(S.screen==="results") return renderResults();
+  const sc = SCENES[S.idx];
+  ({chapter:rChapter, choice:rChoice, multi:rMulti, text:rText, rank:rRank, pairs:rPairs, create:rCreate})[sc.type](sc);
+  const h = app.querySelector("h2, .story"); if(h){ h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); }
+}
+function record(sc, data){
+  S.answers[sc.id] = Object.assign({type:sc.type, day:sc.day, prompt:txt(sc), ms:now()-sceneStart, at:new Date().toISOString()}, data);
+  save();
+}
+
+/* =========================================================
+   PANTALLAS
+   ========================================================= */
+function renderIntro(){
+  const prev = load();
+  const resumable = prev && prev.startedAt && (prev.screen==="scene" || prev.screen==="end" || prev.screen==="results");
+  app.innerHTML = `<div class="scene">
+    <p class="kicker">Una historia interactiva</p>
+    <h1>Una semana cualquiera</h1>
+    <p class="story">Vas a vivir una semana imaginaria hecha de momentos pequeños: un lunes en el trabajo, un imprevisto, una cena, un rato libre, un domingo por la noche. En cada uno, elige lo que harías tú. No lo que estaría bien hacer.</p>
+    <ul class="clean">
+      <li>No hay respuestas correctas ni incorrectas. Si ninguna opción encaja del todo, elige la que más se acerque.</li>
+      <li>A veces te pedirá escribir unas líneas o crear algo en tres minutos.</li>
+      <li>Dura unos 20–25 minutos. Puedes parar cuando quieras: se guarda en este dispositivo.</li>
+      <li>Al final verás qué patrones aparecieron y algunas preguntas para seguir pensando, si te apetece.</li>
+    </ul>
+    <div class="note" style="margin:20px 0"><strong>Privacidad.</strong> Todo ocurre en este navegador. Nada se envía a ningún sitio. Se guardan tus elecciones, lo que escribas y cuánto tiempo pasas en cada escena, solo aquí. Al final puedes descargar una copia o borrarlo todo.</div>
+    ${resumable ? `
+      <div class="actions"><button class="btn accent" id="resume">Continuar donde lo dejaste</button><button class="ghost" id="restart">Empezar de nuevo</button></div>
+    ` : `
+      <label for="nm" class="small muted">¿Cómo quieres que te llame? (opcional)</label>
+      <input type="text" id="nm" autocomplete="off" maxlength="40" style="margin-top:6px">
+      <div class="actions"><button class="btn accent" id="start">Empezar el lunes</button></div>
+    `}
+  </div>`;
+  if(resumable){
+    $("#resume").onclick = ()=>{ S = prev; render(); };
+    $("#restart").onclick = ()=>{ if(confirm("Se borrarán las respuestas guardadas en este dispositivo. ¿Empezar de nuevo?")){ wipe(); S=blank(); render(); } };
+  } else {
+    $("#start").onclick = ()=>{ S = blank(); S.name = $("#nm").value.trim(); S.startedAt = new Date().toISOString(); go(0); };
+  }
+}
+
+function rChapter(sc){
+  const greet = (sc.id==="ch_lunes" && S.name) ? `<p class="muted">Buenos días, ${esc(S.name)}.</p>` : "";
+  app.innerHTML = `<div class="scene" style="padding-top:8vh">
+    <p class="kicker">${esc(sc.day)}</p><h2>${esc(sc.title)}</h2>${greet}
+    <p class="story">${esc(sc.text)}</p>
+    <div class="actions"><button class="btn" id="go">Continuar</button></div></div>`;
+  $("#go").onclick = next;
+}
+
+function rChoice(sc){
+  const prev = S.answers[sc.id];
+  const opts = orderFor(sc);
+  app.innerHTML = `<div class="scene"><p class="story">${esc(txt(sc))}</p>
+    <ul class="opts">${opts.map(o=>`<li><button class="opt ${prev&&prev.value===o.id?"sel":""}" data-id="${o.id}"><span class="mark"></span><span>${esc(o.label)}</span></button></li>`).join("")}</ul></div>`;
+  let locked=false;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    if(locked) return; locked=true;
+    const o = sc.options.find(x=>x.id===b.dataset.id);
+    app.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel")); b.classList.add("sel");
+    record(sc,{value:o.id,label:o.label,tags:o.tags,shownOrder:S.order[sc.id].indexOf(o.id)+1,changedFrom:prev&&prev.value!==o.id?prev.label:undefined});
+    setTimeout(next, 420);
+  });
+}
+
+function rMulti(sc){
+  const prev = S.answers[sc.id];
+  const sel = new Set(prev ? prev.values : []);
+  const opts = orderFor(sc);
+  app.innerHTML = `<div class="scene"><p class="story">${esc(txt(sc))}</p><p class="hint">${esc(sc.hint||"")}</p>
+    <ul class="opts">${opts.map(o=>`<li><button class="opt multi" data-id="${o.id}" aria-pressed="false"><span class="mark">✓</span><span>${esc(o.label)}</span></button></li>`).join("")}</ul>
+    <div class="actions"><button class="btn" id="go" disabled>Continuar</button></div></div>`;
+  const firstClick = {};
+  function sync(){
+    app.querySelectorAll(".opt").forEach(b=>{
+      const on = sel.has(b.dataset.id);
+      b.classList.toggle("sel",on); b.setAttribute("aria-pressed",on);
+      b.disabled = !on && sel.size>=sc.max;
+    });
+    $("#go").disabled = sel.size===0;
+  }
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.id;
+    if(sel.has(id)) sel.delete(id); else if(sel.size<sc.max){ sel.add(id); if(!firstClick[id]) firstClick[id]=now()-sceneStart; }
+    sync();
+  });
+  $("#go").onclick=()=>{
+    const ids=[...sel];
+    record(sc,{values:ids, labels:ids.map(id=>sc.options.find(o=>o.id===id).label), tags:ids.map(id=>sc.options.find(o=>o.id===id).tags), pickMs:firstClick});
+    next();
+  };
+  sync();
+}
+
+function rText(sc){
+  const prev = S.answers[sc.id];
+  app.innerHTML = `<div class="scene"><p class="story">${esc(txt(sc))}</p>
+    <textarea id="ta" placeholder="${esc(sc.placeholder||"")}" ${sc.short?'style="min-height:90px"':""} aria-label="Tu texto">${esc(prev&&!prev.skipped?prev.text:"")}</textarea>
+    <div class="actions"><button class="btn" id="go">Continuar</button><button class="linkbtn" id="skip">Prefiero no escribir esto</button></div></div>`;
+  const ta=$("#ta"); let dels=0, first=null;
+  ta.addEventListener("input",e=>{ if(first===null) first=now()-sceneStart; if(e.inputType&&e.inputType.startsWith("delete")) dels++; });
+  $("#go").onclick=()=>{
+    const t=ta.value.trim();
+    if(!t){ ta.focus(); ta.placeholder="Aunque sea una línea… o pulsa «Prefiero no escribir esto»."; return; }
+    record(sc,{text:t, chars:t.length, words:t.split(/\s+/).filter(Boolean).length, deletions:dels, firstKeyMs:first});
+    next();
+  };
+  $("#skip").onclick=()=>{ record(sc,{skipped:true}); next(); };
+}
+
+function rRank(sc){
+  const prev = S.answers[sc.id];
+  let order = prev ? prev.values.slice() : [];
+  const opts = orderFor(sc);
+  app.innerHTML = `<div class="scene"><p class="story">${esc(txt(sc))}</p>
+    <ul class="opts">${opts.map(o=>`<li><button class="opt" data-id="${o.id}"><span class="mark"></span><span>${esc(o.label)}</span></button></li>`).join("")}</ul>
+    <div class="actions"><button class="btn" id="go" disabled>Continuar</button><button class="linkbtn" id="reset">Volver a ordenar</button></div></div>`;
+  function sync(){
+    app.querySelectorAll(".opt").forEach(b=>{
+      const k = order.indexOf(b.dataset.id);
+      const m = b.querySelector(".mark");
+      b.classList.toggle("sel",k>=0); m.textContent = k>=0 ? k+1 : ""; m.classList.toggle("rankbadge",k>=0);
+      b.disabled = k<0 && order.length>=sc.top;
+    });
+    $("#go").disabled = order.length<sc.top;
+  }
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.id, k=order.indexOf(id);
+    if(k>=0) order.splice(k,1); else if(order.length<sc.top) order.push(id);
+    sync();
+  });
+  $("#reset").onclick=()=>{ order=[]; sync(); };
+  $("#go").onclick=()=>{
+    record(sc,{values:order.slice(), labels:order.map(id=>sc.options.find(o=>o.id===id).label), tags:order.map(id=>sc.options.find(o=>o.id===id).tags)});
+    next();
+  };
+  sync();
+}
+
+function rPairs(sc){
+  const res=[]; let i=0;
+  if(!S.order[sc.id]) S.order[sc.id] = sc.pairs.map(()=>Math.random()<.5);
+  function step(){
+    if(i>=sc.pairs.length){ record(sc,{choices:res}); next(); return; }
+    const p = sc.pairs[i]; const flip = S.order[sc.id][i];
+    const L = flip?p[1]:p[0], R = flip?p[0]:p[1];
+    app.innerHTML = `<div class="scene"><p class="story">${i===0?esc(txt(sc)):"Siguiente puerta."}</p>
+      <div class="pair"><button class="opt door" data-id="${L.id}">${esc(L.label)}</button><button class="opt door" data-id="${R.id}">${esc(R.label)}</button></div>
+      <div class="dots">${sc.pairs.map((_,k)=>`<i class="${k<=i?"on":""}"></i>`).join("")}</div></div>`;
+    const t0=now();
+    app.querySelectorAll(".door").forEach(b=>b.onclick=()=>{
+      const ch = b.dataset.id===p[0].id ? p[0] : p[1];
+      const other = ch===p[0]?p[1]:p[0];
+      b.classList.add("sel");
+      res.push({pair:i+1, chosen:ch.label, rejected:other.label, tags:ch.tags, ms:now()-t0});
+      i++; setTimeout(step, 260);
+    });
+  }
+  step();
+}
+
+function rCreate(sc){
+  app.innerHTML = `<div class="scene"><p class="story">${esc(txt(sc))}</p>
+    <ul class="opts">${sc.modes.map(m=>`<li><button class="opt" data-id="${m.id}"><span class="mark"></span><span><strong>${esc(m.label)}</strong><br><span class="muted small">${esc(m.desc)}</span></span></button></li>`).join("")}</ul></div>`;
+  const chooseMs = ()=>now()-sceneStart;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>startCreate(sc, sc.modes.find(m=>m.id===b.dataset.id), chooseMs()));
+}
+function startCreate(sc, mode, chooseMs){
+  const total = sc.seconds; let left = total, over=false, extended=false;
+  let body="";
+  if(mode.id==="dibujar"){
+    body = `<canvas id="cv" aria-label="Lienzo de dibujo"></canvas>
+      <div class="tools">${["#2b2420","#b0532c","#3f6b5c","#d9a441","#5b7fb5","#ffffff"].map((c,i)=>`<button class="swatch ${i===0?"on":""}" data-c="${c}" style="background:${c}" aria-label="Color"></button>`).join("")}
+      <button class="ghost" id="clr">Borrar</button></div>`;
+  } else if(mode.id==="planear"){
+    body = `<div class="planlist">${[1,2,3,4,5].map(n=>`<input type="text" class="pl" placeholder="Paso ${n}">`).join("")}</div>`;
+  } else {
+    body = `<textarea id="ta" placeholder="${mode.id==="inventar"?"Se llama… y sirve para…":"Por la ventana…"}" style="min-height:200px"></textarea>`;
+  }
+  app.innerHTML = `<div class="scene"><p class="kicker">${esc(mode.label)}</p><p class="muted">${esc(mode.desc)}</p>
+    <div class="timer" role="timer"><span id="tl">3:00</span><span class="bar"><i id="tb" style="width:100%"></i></span></div>
+    ${body}
+    <p id="timeup" class="muted" style="display:none;margin-top:14px">Se acabó el tiempo. Puedes terminar aquí o seguir un poco más.</p>
+    <div class="actions"><button class="btn" id="done">He terminado</button><button class="ghost" id="more" style="display:none">Quiero seguir un poco más</button></div></div>`;
+  const t0=now(); let dels=0;
+  let cv, ctx, color="#2b2420", strokes=0;
+  if(mode.id==="dibujar"){
+    cv=$("#cv"); const dpr=window.devicePixelRatio||1; const r=cv.getBoundingClientRect();
+    cv.width=r.width*dpr; cv.height=r.height*dpr; ctx=cv.getContext("2d"); ctx.scale(dpr,dpr);
+    ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,r.width,r.height);
+    ctx.lineCap="round"; ctx.lineJoin="round"; ctx.lineWidth=3;
+    let drawing=false;
+    const pos=e=>{const b=cv.getBoundingClientRect(); return [e.clientX-b.left, e.clientY-b.top];};
+    cv.addEventListener("pointerdown",e=>{drawing=true; strokes++; cv.setPointerCapture(e.pointerId); const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(x,y); ctx.strokeStyle=color; ctx.lineWidth = color==="#ffffff"?18:3;});
+    cv.addEventListener("pointermove",e=>{ if(!drawing) return; const [x,y]=pos(e); ctx.lineTo(x,y); ctx.stroke(); });
+    ["pointerup","pointercancel","pointerleave"].forEach(ev=>cv.addEventListener(ev,()=>drawing=false));
+    app.querySelectorAll(".swatch").forEach(s=>s.onclick=()=>{ color=s.dataset.c; app.querySelectorAll(".swatch").forEach(x=>x.classList.remove("on")); s.classList.add("on"); });
+    $("#clr").onclick=()=>{ ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,r.width,r.height); };
+  } else {
+    app.addEventListener("input", onInput);
+  }
+  function onInput(e){ if(e.inputType&&e.inputType.startsWith("delete")) dels++; }
+  const iv = setInterval(()=>{
+    left = Math.max(0, total - Math.round((now()-t0)/1000));
+    const el=$("#tl"); if(!el) return;
+    el.textContent = `${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;
+    $("#tb").style.width = (left/total*100)+"%";
+    if(left===0 && !over){ over=true; $("#timeup").style.display="block"; $("#more").style.display="inline-flex"; }
+  }, 500);
+  cleanup = ()=>{ clearInterval(iv); app.removeEventListener("input", onInput); };
+  $("#more").onclick=()=>{ extended=true; $("#timeup").textContent="Tómate el tiempo que quieras."; $("#more").style.display="none"; $("#tl").textContent="Sin reloj"; clearInterval(iv); };
+  $("#done").onclick=()=>{
+    let content;
+    if(mode.id==="dibujar") content = {drawing: cv.toDataURL("image/png"), strokes};
+    else if(mode.id==="planear") content = {steps:[...app.querySelectorAll(".pl")].map(i=>i.value.trim()).filter(Boolean)};
+    else content = {text: $("#ta").value.trim()};
+    const used = Math.round((now()-t0)/1000);
+    S.answers[sc.id] = {type:"create", day:sc.day, prompt:txt(sc), mode:mode.id, modeLabel:mode.label, tags:mode.tags,
+      chooseMs, seconds:used, finishedEarly: used < total-5, extended, deletions:dels, content, at:new Date().toISOString()};
+    save(); cleanup(); cleanup=null; next();
+  };
+}
+
+function renderEnd(){
+  app.innerHTML = `<div class="scene" style="padding-top:8vh">
+    <p class="kicker">Fin de la semana</p><h2>Gracias por vivirla${S.name?", "+esc(S.name):""}.</h2>
+    <p class="story">Lo que viene ahora no es un veredicto. Es un espejo hecho con tus propias decisiones: algunas cosas te sonarán, otras no. Léelo con curiosidad y quédate solo con lo que te resuene. Lo que no encaje también es información.</p>
+    <div class="actions"><button class="btn accent" id="go">Ver lo que apareció</button><button class="linkbtn" id="back2">Volver a la última escena</button></div></div>`;
+  $("#go").onclick=()=>{ if(!S.finishedAt) S.finishedAt=new Date().toISOString(); S.screen="results"; save(); render(); };
+  $("#back2").onclick=()=>go(SCENES.length-1);
+}
+
+/* =========================================================
+   ANÁLISIS
+   ========================================================= */
+function analyze(){
+  const sc={}, ev={};
+  const add=(tags,w,label)=>{ for(const k in tags){ const v=tags[k]*w; sc[k]=(sc[k]||0)+v; if(v>0){ (ev[k]=ev[k]||[]).push(label); } } };
+  const A=S.answers;
+  for(const s of SCENES){
+    const a=A[s.id]; if(!a) continue;
+    if(s.type==="choice") add(a.tags,1,a.label);
+    if(s.type==="multi") a.tags.forEach((t,i)=>add(t,1,a.labels[i]));
+    if(s.type==="rank") a.tags.forEach((t,i)=>add(t,[1.5,1,.5][i],a.labels[i]+(i===0?" (1.ª)":"")));
+    if(s.type==="pairs") a.choices.forEach(c=>add(c.tags,1,c.chosen));
+    if(s.type==="create"){ add(a.tags,1,"Crear: "+a.modeLabel); if(a.extended){ sc.flow=(sc.flow||0)+1; (ev.flow=ev.flow||[]).push("Quisiste seguir después de los 3 minutos"); } }
+  }
+  const g=k=>sc[k]||0;
+  const doms = Object.keys(DOM).map(k=>({k, v:g(k)})).sort((a,b)=>b.v-a.v);
+  const vals = Object.keys(VALS).map(k=>({k, v:g(k)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+  const confs = Object.keys(CONF).map(k=>({k, v:g(k)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+  const texts = SCENES.filter(s=>s.type==="text").map(s=>({id:s.id, a:A[s.id]})).filter(x=>x.a);
+  let hes=null;
+  if(A.puertas){ const ms=A.puertas.choices.map(c=>c.ms).sort((a,b)=>a-b); const med=ms[Math.floor(ms.length/2)]||0;
+    const top=A.puertas.choices.slice().sort((a,b)=>b.ms-a.ms)[0]; if(top && top.ms>Math.max(3500,med*1.6)) hes=top; }
+  return {sc, ev, g, doms, vals, confs, texts, hes};
+}
+
+function tensions(R){
+  const g=R.g, out=[], top2=R.doms.slice(0,2).map(d=>d.k), cr=S.answers.crear;
+  if(top2.includes("P") && g("sol")>g("soc")) out.push(["Personas, pero en distancias cortas","Te orientas mucho hacia las personas y, a la vez, elegiste a menudo la opción tranquila o en solitario. Una lectura posible: te importan las personas en relaciones cercanas o uno a uno, más que en grupos o en situaciones de exposición. También puede ser timidez inicial, que no dice nada de tu interés por los demás."]);
+  if(g("vSeg")>=2 && g("vAut")>=2) out.push(["Estabilidad y libertad a la vez","Buscas seguridad y autonomía al mismo tiempo. No es una contradicción: mucha gente necesita una base estable para atreverse a explorar. La pregunta es qué proporción de cada una necesitas ahora."]);
+  if(g("nov")>=3 && g("pro")>=3) out.push(["Explorar y profundizar","Te atrae lo nuevo y también ir a fondo. Quizá te va bien explorar mucho al principio y luego elegir algo en lo que quedarte; o necesitas variedad dentro de un mismo tema."]);
+  if(top2.includes("E") && cr && cr.mode==="planear") out.push(["Lo expresivo, ¿desde fuera o desde dentro?","Lo expresivo aparece mucho en tus elecciones, pero cuando tocó crear elegiste planificar. Puede que disfrutes de lo creativo más como espectadora; o que crear desde cero te imponga más respeto que organizar."]);
+  if(!top2.includes("E") && cr && (cr.mode==="escribir"||cr.mode==="dibujar") && g("flow")>=2) out.push(["Una chispa que no aparecía en el resto","Lo expresivo no destaca en tus elecciones generales, pero cuando creaste el tiempo se te pasó volando. A veces lo que más nos absorbe no es lo que elegiríamos sobre el papel."]);
+  if(g("dsm")>=3 && g("flow")>=2) out.push(["La energía está, quizá en otro sitio","Varias escenas sugieren que la rutina pesa, y sin embargo hubo momentos de absorción claros. Eso apunta a que el cansancio podría tener que ver con el contexto, más que con una falta de energía o de interés general."]);
+  if(g("vJus")>=3 && g("cEvi")>=2) out.push(["La justicia te importa; el choque, menos","Te importa que las cosas sean justas y, a la vez, sueles evitar el enfrentamiento directo. Hay muchas maneras de trabajar por lo justo que no pasan por la confrontación: documentar, acompañar, diseñar mejores reglas, mediar."]);
+  return out;
+}
+
+/* =========================================================
+   RESULTADOS
+   ========================================================= */
+function chips(list, cls){ return list && list.length ? `<div class="chips">${[...new Set(list)].slice(0,6).map(x=>`<span class="chip ${cls||""}">${esc(x)}</span>`).join("")}</div>` : `<span class="muted small">Sin elecciones claras en esta dirección.</span>`; }
+
+function buildQuestions(R){
+  const A=S.answers, Q=[];
+  if(A.dedicas && !A.dedicas.skipped) Q.push(["dedicas",`En la cena respondiste: <span class="quote">«${esc(A.dedicas.text)}»</span> Si lo relees ahora, ¿qué sientes? ¿Qué parte de ti se queda fuera de esa respuesta?`]);
+  else if(A.dedicas) Q.push(["dedicas","En la cena preferiste no escribir qué responderías cuando te preguntaron a qué te dedicas. ¿Qué hace que esa pregunta sea incómoda, si lo es?"]);
+  if(A.bandeja) Q.push(["bandeja",`El lunes, con poco tiempo, elegiste: «${esc(A.bandeja.label)}». ¿Ese impulso tiene espacio en tu trabajo actual? ¿Cuánto, del 1 al 10?`]);
+  if(A.crear){
+    const f = A.flujo ? A.flujo.label.toLowerCase().replace(/\.$/,"") : "";
+    Q.push(["crear",`Cuando tuviste que crear algo, elegiste <strong>${esc(A.crear.modeLabel.toLowerCase())}</strong>${f?` y el tiempo «${esc(f)}»`:""}${A.crear.extended?", y quisiste seguir cuando se acabó el reloj":""}. ¿Cuándo fue la última vez que te pasó algo así en tu vida diaria? ¿Qué estabas haciendo?`]);
+  }
+  if(A.aprender) Q.push(["aprender",`Elegiste aprender: «${esc(A.aprender.labels.join("» y «"))}». ¿Qué te atrajo: el resultado, el proceso, el tipo de gente que lo hace, o la imagen de ti haciéndolo?`]);
+  if(A.reunion) Q.push(["reunion",`Ante el fallo de tu colega elegiste: «${esc(A.reunion.label)}». ¿Así es como sueles reaccionar, o así es como te gustaría reaccionar?`]);
+  if(A.pestanas) Q.push(["pestanas",`Abriste: «${esc(A.pestanas.labels.join("», «"))}». Si pudieras pasar una semana entera con una sola de esas preguntas, ¿cuál sería y por qué?`]);
+  if(R.hes) Q.push(["puertas",`La puerta que más te hizo dudar fue la de «${esc(R.hes.chosen)}» frente a «${esc(R.hes.rejected)}» (elegiste la primera). ¿Qué está en juego para ti en esa decisión?`]);
+  if(A.voluntariado) Q.push(["voluntariado",`Tu primera opción de voluntariado fue: «${esc(A.voluntariado.labels[0])}». Si fuera tu trabajo todos los días, ¿seguiría apeteciéndote? ¿Qué parte sí y qué parte no?`]);
+  if(A.domingo) Q.push(["domingo",`El domingo por la noche marcaste: «${esc(A.domingo.label)}». Si algo tuviera que cambiar para que fuese distinto, ¿sería la tarea, el lugar, las personas, el sentido de lo que haces o el ritmo?`]);
+  if(A.frase && !A.frase.skipped) Q.push(["frase",`Tu frase de antes de dormir fue: <span class="quote">«${esc(A.frase.text)}»</span> ¿De dónde crees que salió?`]);
+  Q.push(["futuro","Ahora sí, sin historia de por medio: dentro de dos años, en esa misma cena, ¿qué te gustaría poder contestar?"]);
+  Q.push(["falso","¿Hay algo en estos resultados que te parezca falso o que no te represente? Explícalo: es tan útil como lo que sí encaja."]);
+  return Q;
+}
+
+function renderResults(){
+  const R = analyze(), A=S.answers;
+  const max = Math.max(1, ...R.doms.map(d=>d.v));
+  const top = R.doms.filter(d=>d.v>0).slice(0,2);
+  const pairKey = top.length===2 ? [top[0].k, top[1].k].sort().join("") : null;
+  const T = tensions(R);
+  const Q = buildQuestions(R);
+  const dsm = R.g("dsm");
+  const crear = A.crear;
+
+  const axesHtml = AXES.map(([a,b,la,lb])=>{
+    const x=R.g(a), y=R.g(b); const tot=x+y; if(tot===0) return "";
+    const pos = 50 + ((y-x)/tot)*42;
+    return `<div class="axis"><div class="lbl"><span>${la}</span><span>${lb}</span></div><div class="track"><b style="left:${pos}%"></b></div></div>`;
+  }).join("");
+
+  const domCards = top.map(d=>{ const D=DOM[d.k]; return `<div class="card"><h3>${D.name} <span class="muted small">· ${D.short}</span></h3>
+    <div class="row"><b>Lo que observamos</b>${chips(R.ev[d.k])}</div>
+    <div class="row"><b>Una lectura posible</b>${D.read}</div>
+    <div class="row"><b>Otra explicación posible</b>${D.alt}</div>
+    <div class="row"><b>Lo que aún no sabemos</b>${D.unk}</div></div>`; }).join("");
+
+  const valHtml = R.vals.slice(0,4).map(v=>`<div class="card"><h3>${VALS[v.k]}</h3><div class="row"><b>Aparece en</b>${chips(R.ev[v.k],"sage")}</div></div>`).join("");
+
+  const c = R.confs[0];
+  const confHtml = c ? `<div class="card"><h3>${CONF[c.k].name}</h3>
+      <div class="row"><b>Lo que observamos</b>${chips(R.ev[c.k])}</div>
+      <div class="row"><b>Una lectura posible</b>${CONF[c.k].read}</div>
+      <div class="row"><b>Otra explicación posible</b>${CONF[c.k].alt}</div>
+      ${R.confs[1]?`<div class="row"><b>También aparece</b>${CONF[R.confs[1].k].name.toLowerCase()}. La forma de afrontar un desacuerdo suele cambiar según con quién, y según lo que esté en juego.</div>`:""}</div>` : "";
+
+  const energy = [];
+  if(R.g("flow")>=2) energy.push(`<div class="card"><h3>Momentos de absorción</h3><div class="row"><b>Lo que observamos</b>${chips(R.ev.flow)}</div><div class="row"><b>Por qué importa</b>Los momentos en que el tiempo se pasa sin notarlo son pistas más fiables que lo que creemos que nos gusta. Merece la pena buscar qué tenían en común.</div></div>`);
+  if(dsm>=2) energy.push(`<div class="card"><h3>Cansancio con la rutina</h3><div class="row"><b>Lo que observamos</b>${chips(R.ev.dsm)}</div><div class="row"><b>Una lectura posible</b>Algo en la rutina actual pesa. Pero la desmotivación puede venir de sitios muy distintos: la tarea en sí, el entorno, las personas, la falta de sentido, el ritmo, la etapa vital o el agotamiento. Cada causa pide una respuesta diferente, y no todas pasan por cambiar de profesión.</div><div class="row"><b>Lo que aún no sabemos</b>Desde cuándo es así, y si ocurre también fuera del trabajo.</div></div>`);
+  if(!energy.length) energy.push(`<p class="muted">No aparecieron señales claras de absorción ni de cansancio en esta historia. Eso no significa que no existan: quizá estas escenas no las tocaron.</p>`);
+
+  const textRows = R.texts.map(({id,a})=>{ const name={mensaje:"Mensaje a la colega",nota:"Nota a la vecina",dedicas:"«¿A qué te dedicas?»",frase:"Frase de la libreta"}[id];
+    return a.skipped ? `<tr><td>${name}</td><td colspan="3" class="muted">Preferiste no escribirlo</td></tr>`
+      : `<tr><td>${name}</td><td>${a.words} palabras</td><td>${Math.round(a.ms/1000)} s</td><td>${a.deletions} correcciones</td></tr>`; }).join("");
+
+  const drawing = crear && crear.mode==="dibujar" && crear.content.drawing ? `<img class="drawing" src="${crear.content.drawing}" alt="Tu dibujo">` : "";
+  const created = crear ? (crear.mode==="planear" ? `<ol>${crear.content.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>` : crear.content.text ? `<p class="quote">${esc(crear.content.text).replace(/\n/g,"<br>")}</p>` : drawing) : "";
+
+  app.innerHTML = `<div class="scene res">
+    <p class="kicker">Lo que apareció</p>
+    <h1 style="font-size:clamp(28px,7vw,38px)">Un espejo, no un veredicto</h1>
+    <p class="story" style="font-size:19px">Esto se ha construido solo con lo que elegiste en ${Object.keys(A).length} momentos de una semana imaginaria. Son <em>hipótesis</em>: pistas para pensar, no conclusiones. Una situación imaginaria no siempre coincide con lo que harías en la vida real, y hay muchas cosas de ti que esta historia no ha tocado.</p>
+    <nav class="toc noprint"><a href="#mapa">Mapa</a><a href="#hip">Hipótesis</a><a href="#val">Valores</a><a href="#rel">Relaciones</a><a href="#ene">Energía</a>${T.length?'<a href="#ten">Tensiones</a>':""}<a href="#ter">Territorios</a><a href="#pre">Preguntas</a><a href="#exp">Exportar</a></nav>
+
+    <section id="mapa"><h2>Hacia dónde fue tu atención</h2>
+      <p class="muted small">Seis direcciones generales. La barra indica cuántas veces apareció cada una en tus elecciones, en comparación con la más frecuente.</p>
+      <div class="bars">${R.doms.map((d,i)=>`<div class="barrow ${i>1?"lo":""}"><span>${DOM[d.k].name}</span><span class="t"><i style="width:${Math.round(d.v/max*100)}%"></i></span><span class="n">${Math.round(d.v*10)/10}</span></div>`).join("")}</div>
+      <h3 style="margin-top:28px">Cómo te moviste</h3>
+      <p class="muted small">Cada punto está donde se inclinaron tus elecciones entre dos polos. Ninguno es mejor que el otro.</p>
+      ${axesHtml}
+    </section>
+
+    <section id="hip"><h2>Hipótesis principales</h2>${domCards || '<p class="muted">No hay suficientes datos.</p>'}
+      ${top.length===2 && Math.abs(top[0].v-top[1].v)<1.5 && R.doms[2] && Math.abs(top[1].v-R.doms[2].v)<1.5 ? `<p class="muted small">Las diferencias entre direcciones son pequeñas. Puede que tu perfil sea amplio, o que esta historia no haya encontrado todavía lo que más te mueve.</p>`:""}
+    </section>
+
+    <section id="val"><h2>Lo que parece importarte</h2><p class="muted small">Valores que se repitieron en tus decisiones, de más a menos.</p>${valHtml||'<p class="muted">Sin datos claros.</p>'}</section>
+
+    <section id="rel"><h2>Cómo te relacionas con los desacuerdos y con la gente</h2>${confHtml}
+      <div class="card"><h3>Sobre la timidez</h3><div class="row">Elegir lo tranquilo, observar primero o necesitar tiempo para entrar en confianza no indica falta de interés por las personas ni falta de capacidad. Muchas profesiones muy humanas se ejercen mejor desde la escucha que desde el escenario. Lo que esta historia no puede distinguir es cuánto de tus elecciones es preferencia y cuánto es costumbre o prudencia.</div></div>
+    </section>
+
+    <section id="ene"><h2>Dónde está tu energía</h2>${energy.join("")}
+      ${crear?`<div class="card"><h3>Lo que creaste</h3><div class="row muted small">${esc(crear.modeLabel)} · ${crear.seconds} s${crear.extended?" · pediste más tiempo":crear.finishedEarly?" · terminaste antes del final":""}</div>${created}</div>`:""}
+      ${textRows?`<div class="card"><h3>Cómo escribiste</h3><table class="mini"><tr><th>Escena</th><th>Extensión</th><th>Tiempo</th><th>Borrados</th></tr>${textRows}</table><p class="muted small" style="margin:10px 0 0">Ojo: más tiempo o más correcciones no significan nada por sí solos. Pueden indicar cuidado, duda, interés o simplemente que te interrumpieron.</p></div>`:""}
+    </section>
+
+    ${T.length?`<section id="ten"><h2>Tensiones interesantes</h2><p class="muted small">Lugares donde tus elecciones tiran en direcciones distintas. Suelen ser los más jugosos para pensar.</p>${T.map(([h,b])=>`<div class="card"><h3>${h}</h3><div class="row">${b}</div></div>`).join("")}</section>`:""}
+
+    <section id="ter"><h2>Territorios para explorar</h2>
+      ${pairKey?`<p>La combinación de <strong>${DOM[top[0].k].name.toLowerCase()}</strong> y <strong>${DOM[top[1].k].name.toLowerCase()}</strong> aparece en campos como: ${TERR[pairKey]}.</p>`:""}
+      <p class="muted small">Son ejemplos para ampliar el mapa, no recomendaciones. Muchos exigen formación específica; otros no. Y tu formación previa es un recurso, no un destino: lo que estudiaste y lo que te mueve pueden coincidir, combinarse o separarse, y las tres posibilidades son legítimas.</p>
+      <h3 style="margin-top:22px">Pequeños experimentos</h3>
+      <p class="muted small">Antes de grandes decisiones, pruebas pequeñas y baratas. Lo importante no es si te sale bien, sino cómo te sientes durante y después.</p>
+      <ul class="clean">${top.map(d=>`<li>${DOM[d.k].exp}</li>`).join("")}
+        <li>Habla 20 minutos con alguien que trabaje en algo que te haya intrigado en esta historia. Pregúntale qué es lo más aburrido de su trabajo.</li>
+        <li>Durante dos semanas, anota cada noche un momento en el que tuviste energía y otro en el que te faltó. Al final, busca patrones.</li></ul>
+    </section>
+
+    <section id="pre"><h2>Preguntas para ir más hondo</h2>
+      <p class="muted small">Están hechas a partir de lo que elegiste. No hace falta contestarlas todas ni ahora. Lo que escribas se guarda en este dispositivo y se incluye al exportar.</p>
+      ${Q.map(([k,q])=>`<div class="q"><p>${q}</p><textarea data-k="${k}" aria-label="Tu respuesta">${esc(S.reflections[k]||"")}</textarea></div>`).join("")}
+      <p class="saved" id="saved"></p>
+    </section>
+
+    <section id="lim"><h2>Qué es y qué no es esto</h2>
+      <ul class="clean">
+        <li>No es un test psicológico validado ni una evaluación clínica. No accede a nada oculto: solo ordena lo que elegiste.</li>
+        <li>Son unas veinte decisiones en situaciones imaginarias, con opciones limitadas. En la vida real hay matices, contextos y personas concretas.</li>
+        <li>El estado de ánimo del día influye en las respuestas. Repetirla otro día puede dar matices distintos, y eso también es información.</li>
+        <li>Lo más útil suele ser comentarlo con alguien de confianza o con una profesional de la orientación, usando este documento como punto de partida.</li>
+        ${dsm>=3?"<li>Si la desmotivación viene acompañada de tristeza persistente, agotamiento o pérdida de interés por casi todo, vale la pena hablarlo también con una profesional de la salud.</li>":""}
+      </ul>
+    </section>
+
+    <section id="exp" class="noprint"><h2>Guardar y exportar</h2>
+      <p class="muted small">Los archivos se generan en tu dispositivo. Nada se envía a ningún servidor.</p>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn" id="dlmd">Descargar informe (.md)</button>
+        <button class="ghost" id="dljson">Datos completos (.json)</button>
+        <button class="ghost" id="print">Imprimir / PDF</button>
+        <button class="ghost" id="copy">Copiar datos</button>
+      </div>
+      <div class="actions"><button class="linkbtn" id="redo">Repasar mis respuestas</button><button class="linkbtn" id="del">Borrar todo de este dispositivo</button></div>
+    </section>
+  </div>`;
+
+  let tmr;
+  app.querySelectorAll(".q textarea").forEach(t=>t.addEventListener("input",()=>{
+    S.reflections[t.dataset.k]=t.value; clearTimeout(tmr);
+    tmr=setTimeout(()=>{ save(); $("#saved").textContent="Guardado en este dispositivo."; setTimeout(()=>{ const s=$("#saved"); if(s) s.textContent=""; },1800); },500);
+  }));
+  const stamp = (S.finishedAt||new Date().toISOString()).slice(0,10);
+  $("#dlmd").onclick=()=>download(`una-semana-cualquiera-${stamp}.md`, buildMarkdown(R,T,Q), "text/markdown");
+  $("#dljson").onclick=()=>download(`una-semana-cualquiera-${stamp}.json`, JSON.stringify(buildJSON(R,Q),null,2), "application/json");
+  $("#print").onclick=()=>window.print();
+  $("#copy").onclick=async()=>{ try{ await navigator.clipboard.writeText(JSON.stringify(buildJSON(R,Q),null,2)); $("#copy").textContent="Copiado"; }catch(e){ $("#copy").textContent="No se pudo copiar"; } };
+  $("#redo").onclick=()=>go(0);
+  $("#del").onclick=()=>{ if(confirm("Se borrarán todas tus respuestas de este dispositivo. Si quieres conservarlas, descárgalas antes. ¿Borrar?")){ wipe(); S=blank(); render(); } };
+}
+
+/* =========================================================
+   EXPORTACIÓN
+   ========================================================= */
+function download(name, content, type){
+  const blob = new Blob([content], {type:type+";charset=utf-8"});
+  const a = document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function strip(h){ return String(h).replace(/<[^>]+>/g,"").replace(/&laquo;|&raquo;/g,'"').replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'"); }
+function buildJSON(R,Q){
+  return {
+    meta:{instrument:"Una semana cualquiera", version:S.version, name:S.name||null, startedAt:S.startedAt, finishedAt:S.finishedAt, exportedAt:new Date().toISOString(),
+      note:"Herramienta exploratoria, no validada psicométricamente. Etiquetas: P personas, I comprender, E expresar, S ordenar, M hacer, A impulsar; v* valores; c* estilos ante el conflicto; soc/sol, nov/pro, pla/imp, lid/obs, log; dsm cansancio; flow absorción. 'ms' = milisegundos en la escena; 'shownOrder' = posición en que se mostró la opción (orden aleatorio)."},
+    answers: SCENES.filter(s=>s.type!=="chapter").map(s=>Object.assign({id:s.id}, S.answers[s.id]||{missing:true})),
+    scores: R.sc,
+    summary:{domains:R.doms.map(d=>({dimension:DOM[d.k].name, score:d.v})), values:R.vals.map(v=>({value:VALS[v.k], score:v.v})), conflict:R.confs.map(c=>({style:CONF[c.k].name, score:c.v})), hesitation:R.hes},
+    reflections: Q.map(([k,q])=>({id:k, question:strip(q), answer:S.reflections[k]||""}))
+  };
+}
+function buildMarkdown(R,T,Q){
+  const A=S.answers, L=[];
+  L.push(`# Una semana cualquiera${S.name?" — "+S.name:""}`);
+  L.push(`Inicio: ${S.startedAt||"-"} · Fin: ${S.finishedAt||"-"}`,"");
+  L.push("> Herramienta exploratoria. Las interpretaciones son hipótesis basadas en elecciones en situaciones imaginarias, no conclusiones clínicas.","");
+  L.push("## Respuestas, escena por escena","");
+  for(const s of SCENES){
+    if(s.type==="chapter"){ L.push(`### ${s.day} — ${s.title}`,""); continue; }
+    const a=A[s.id]; L.push(`**${txt(s)}**`);
+    if(!a){ L.push("- _(sin respuesta)_",""); continue; }
+    const secs = a.ms?` _(${Math.round(a.ms/1000)} s)_`:"";
+    if(s.type==="choice") L.push(`- ${a.label}${secs}${a.changedFrom?` — antes había elegido: ${a.changedFrom}`:""}`);
+    if(s.type==="multi") a.labels.forEach(l=>L.push(`- ${l}`));
+    if(s.type==="rank") a.labels.forEach((l,i)=>L.push(`${i+1}. ${l}`));
+    if(s.type==="pairs") a.choices.forEach(c=>L.push(`- ${c.chosen}  ·  (frente a: ${c.rejected}) _${(c.ms/1000).toFixed(1)} s_`));
+    if(s.type==="text") L.push(a.skipped?"- _(prefirió no escribir)_":`> ${a.text.replace(/\n/g,"\n> ")}\n\n_${a.words} palabras · ${Math.round(a.ms/1000)} s · ${a.deletions} borrados_`);
+    if(s.type==="create"){
+      L.push(`- Formato: ${a.modeLabel} · ${a.seconds} s${a.extended?" · pidió más tiempo":""}${a.finishedEarly?" · terminó antes":""}`);
+      if(a.content.text) L.push(`> ${a.content.text.replace(/\n/g,"\n> ")}`);
+      if(a.content.steps) a.content.steps.forEach((x,i)=>L.push(`${i+1}. ${x}`));
+      if(a.content.drawing) L.push("- _(dibujo incluido en el archivo .json)_");
+    }
+    L.push("");
+  }
+  L.push("## Patrones observados","");
+  L.push("**Direcciones de atención:** "+R.doms.map(d=>`${DOM[d.k].name} ${Math.round(d.v*10)/10}`).join(" · "),"");
+  L.push("**Valores:** "+(R.vals.map(v=>`${VALS[v.k]} ${v.v}`).join(" · ")||"-"),"");
+  L.push("**Estilo ante el conflicto:** "+(R.confs.map(c=>`${CONF[c.k].name} ${c.v}`).join(" · ")||"-"),"");
+  AXES.forEach(([a,b,la,lb])=>{ const x=R.g(a),y=R.g(b); if(x+y) L.push(`- ${la} ${x} ↔ ${y} ${lb}`); });
+  L.push("");
+  R.doms.filter(d=>d.v>0).slice(0,2).forEach(d=>{ const D=DOM[d.k];
+    L.push(`### Hipótesis: ${D.name}`, `- Observado: ${[...new Set(R.ev[d.k]||[])].join("; ")}`, `- Lectura posible: ${D.read}`, `- Otra explicación: ${D.alt}`, `- Aún no sabemos: ${D.unk}`, ""); });
+  if(T.length){ L.push("### Tensiones",""); T.forEach(([h,b])=>L.push(`- **${h}.** ${b}`)); L.push(""); }
+  if(R.hes) L.push(`**Mayor duda:** «${R.hes.chosen}» frente a «${R.hes.rejected}» (${(R.hes.ms/1000).toFixed(1)} s)`,"");
+  L.push("## Preguntas de reflexión","");
+  Q.forEach(([k,q])=>{ L.push(`**${strip(q)}**`, "", S.reflections[k] ? S.reflections[k] : "_(sin responder)_", ""); });
+  return L.join("\n");
+}
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+render();
+</script>
+</body>
+</html>
