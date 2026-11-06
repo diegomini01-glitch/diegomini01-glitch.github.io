@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=920">
+<title>El próximo capítulo de Celia</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Lora:ital,wght@0,400;0,600;1,400&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Layout: un libro que se hojea (StPageFlip). Si la librería no carga, las páginas se apilan como un documento. */
+:root{
+  --desk:#efe3e1; --paper:#fffaf6; --paper2:#fbf1ec; --ink:#2c1a21; --soft:#73596a; --line:#ead6da;
+  --wine:#8e2c4c; --rose:#f7dfe6; --gold:#a8823a; --gold-soft:#f6ebd5; --sage:#3f6a5c; --sage-soft:#e2eee8;
+  --cover:#6d1f3a; --cover-ink:#f8e9d8;
+  --display:"Cormorant Garamond","Garamond","Georgia",serif;
+  --body:"Lora","Georgia",serif;
+  --ui:"Jost",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --desk:#140d10; --paper:#2a1d23; --paper2:#2f2128; --ink:#f3e6ea; --soft:#c7adb8; --line:#45313a;
+  --wine:#f0a3bb; --rose:#432634; --gold:#e2c07a; --gold-soft:#3b311f; --sage:#9fd0bd; --sage-soft:#203329;
+  --cover:#4a1328; --cover-ink:#f8e9d8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --desk:#140d10; --paper:#2a1d23; --paper2:#2f2128; --ink:#f3e6ea; --soft:#c7adb8; --line:#45313a;
+  --wine:#f0a3bb; --rose:#432634; --gold:#e2c07a; --gold-soft:#3b311f; --sage:#9fd0bd; --sage-soft:#203329;
+  --cover:#4a1328; --cover-ink:#f8e9d8; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0}
+body{background:var(--desk);color:var(--ink);font-family:var(--body)}
+.stage{max-width:1000px;margin:0 auto;padding-block:14px 30px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar{display:flex;align-items:center;justify-content:center;gap:14px;margin:12px 0 0;font-family:var(--ui);font-size:14px;color:var(--soft)}
+.bar button{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:9px 18px;cursor:pointer;min-height:42px}
+.bar button:hover{border-color:var(--wine);color:var(--wine)}
+.bar button:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+.hint{text-align:center;font-family:var(--ui);font-size:12.5px;color:var(--soft);margin:8px 0 0}
+#book{margin:0 auto}
+
+/* páginas */
+.page{background:var(--paper);color:var(--ink);overflow:hidden;container-type:size}
+.page:nth-child(even){background:linear-gradient(90deg,var(--paper) 92%,var(--paper2))}
+.page:nth-child(odd){background:linear-gradient(270deg,var(--paper) 92%,var(--paper2))}
+.in{height:100%;padding:7cqw 8cqw 6cqw;display:flex;flex-direction:column;font-size:clamp(11px,3.55cqw,15.5px);line-height:1.5}
+.in p{margin:0 0 .7em}
+.folio{position:absolute;left:0;right:0;bottom:4cqh;text-align:center;font-family:var(--display);font-style:italic;color:var(--soft);font-size:1em;padding-top:.4em}
+.kick{font-family:var(--ui);font-size:.72em;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:0 0 .3em}
+h1,h2,h3{font-family:var(--display);font-weight:500;font-style:italic;line-height:1.08;margin:0;text-wrap:balance}
+h2{font-size:2.1em;color:var(--wine);margin:0 0 .35em}
+h3{font-size:1.75em;color:var(--wine);margin:.1em 0 .2em}
+.orn{text-align:center;color:var(--gold);letter-spacing:.5em;margin:.4em 0}
+.sm{font-size:.86em;color:var(--soft)}
+.in>.chip,.dream>.chip{align-self:flex-start}
+.chip{display:inline-block;font-family:var(--ui);font-size:.68em;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.25em .7em;border-radius:999px;background:var(--rose);color:var(--wine)}
+.chip.g{background:var(--sage-soft);color:var(--sage)}
+.chip.y{background:var(--gold-soft);color:var(--gold)}
+.ill{display:block;width:100%;height:24cqh;margin:0 0 .5em}
+.ill *{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ill .s{stroke:var(--ink);stroke-width:2.2}
+.ill .w{stroke:var(--wine);stroke-width:2.4}
+.ill .g{stroke:var(--gold);stroke-width:2}
+.ill .fw{fill:var(--rose);stroke:none}
+.ill .fg{fill:var(--gold-soft);stroke:none}
+.draw{stroke-dasharray:400;stroke-dashoffset:400;animation:draw 2.2s ease forwards}
+.d2{animation-delay:.5s}.d3{animation-delay:1s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.draw{animation:none;stroke-dashoffset:0}}
+.money{display:grid;grid-template-columns:1fr 1fr;gap:.5em;margin:.5em 0}
+.money div{background:var(--gold-soft);border-radius:.6em;padding:.45em .7em}
+.money b{display:block;font-family:var(--ui);font-size:.66em;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.money span{font-family:var(--display);font-weight:600;font-size:1.35em;font-variant-numeric:tabular-nums}
+dl.beats{margin:0;display:grid;gap:.35em}
+dl.beats dt{font-family:var(--display);font-style:italic;color:var(--wine);font-size:1.12em;line-height:1.2}
+dl.beats dd{margin:0}
+table{width:100%;border-collapse:collapse;font-family:var(--ui);font-size:.8em}
+th,td{padding:.42em .3em;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:.82em;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);font-weight:600}
+td.h{color:var(--wine);white-space:nowrap;letter-spacing:1px}
+td.h i{font-style:normal;color:var(--line)}
+.verd{display:grid;gap:.55em;font-size:.95em}
+.verd div{border-left:3px solid var(--line);padding-left:.6em}
+.verd div.best{border-color:var(--wine)}
+.verd strong{font-family:var(--display);font-style:italic;font-size:1.15em;color:var(--wine);font-weight:600}
+.dream{border-top:1px dashed var(--line);padding-top:.55em;margin-top:.55em}
+.dream h3{font-size:1.45em}
+.arc{display:grid;gap:.2em;font-size:.92em}
+.arc span b{font-family:var(--ui);font-size:.72em;letter-spacing:.1em;text-transform:uppercase;margin-right:.4em}
+.arc .a1 b{color:var(--soft)} .arc .a2 b{color:var(--wine)} .arc .a3 b{color:var(--sage)}
+.big{font-family:var(--display);font-style:italic;font-size:1.6em;line-height:1.25;color:var(--wine);text-align:center;margin:auto 0}
+.letter{font-size:.97em}
+.sig{font-family:var(--display);font-style:italic;font-size:1.4em;color:var(--wine);text-align:right}
+
+/* tapas */
+.cover{background:var(--cover)!important;color:var(--cover-ink)}
+.cover .in{justify-content:center;text-align:center;border:1px solid rgba(248,233,216,.35);margin:4cqw;height:calc(100% - 8cqw);border-radius:3px}
+.cover h1{font-size:4.2em;color:var(--cover-ink);font-weight:500}
+.cover .kick{color:#e8c98a}
+.cover .sub{font-family:var(--display);font-style:italic;font-size:1.45em;opacity:.9;margin:.3em 0 1.2em}
+.cover .ill .s,.cover .ill .w{stroke:var(--cover-ink)} .cover .ill .g{stroke:#e8c98a} .cover .ill .fw{fill:rgba(248,233,216,.15)}
+.cover .by{font-family:var(--ui);font-size:.75em;letter-spacing:.2em;text-transform:uppercase;opacity:.85}
+
+/* sin librería: documento apilado */
+.flat #book{max-width:560px}
+.flat .page{position:relative;padding-bottom:28px;height:auto;margin:0 0 14px;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.08);container-type:inline-size}
+.flat .in{height:auto;min-height:0}
+.flat .ill{height:150px}
+.flat .bar,.flat .hint{display:none}
+</style>
+
+</head>
+<body>
+<style>
+.routes{display:grid;gap:.55em;margin:.4em 0}
+.route{display:grid;grid-template-columns:2.6em 1fr;gap:.6em;align-items:start;border:1px solid var(--line);border-radius:.7em;padding:.55em .7em}
+.route.fav{border-color:var(--wine);background:var(--rose)}
+.route svg{width:2.6em;height:2.6em}
+.route svg *{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.route .s{stroke:var(--ink);stroke-width:2.4}.route .g{stroke:var(--gold);stroke-width:2.4}.route .w{stroke:var(--wine);stroke-width:2.6}
+.route b{font-family:var(--display);font-style:italic;font-size:1.25em;color:var(--wine);font-weight:600;display:block;line-height:1.15}
+.route span{font-size:.88em}
+.loves2{display:grid;grid-template-columns:1fr 1fr;gap:.6em;margin:.4em 0}
+.loves2 div{background:var(--paper2);border-radius:.6em;padding:.5em .7em;font-size:.9em}
+.loves2 b{font-family:var(--display);font-style:italic;color:var(--wine);font-size:1.2em;display:block;margin-bottom:.15em}
+.loves2 ul{margin:0;padding-left:1em}
+.ask{display:grid;gap:.6em;margin:.3em 0}
+.ask div{border-left:3px solid var(--gold);padding-left:.7em}
+.ask i{font-family:var(--display);font-size:1.18em;color:var(--ink)}
+.ask span{display:block;font-family:var(--ui);font-size:.82em;color:var(--wine);font-weight:500;margin-top:.15em}
+.partpage .in{justify-content:center;text-align:center}
+.partpage .ill{height:25cqh}
+.partpage h2{font-size:2.6em}
+.partpage td+td{white-space:nowrap}
+.cite{font-family:var(--display);font-style:italic;font-size:1.32em;line-height:1.3;color:var(--wine);text-align:center;margin:.5em 0 .1em}
+.cite-by{text-align:center;font-family:var(--ui);font-size:.78em;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .6em}
+.vows{counter-reset:v;list-style:none;padding:0;margin:.5em 0 0;display:grid;gap:.45em}
+.vows li{counter-increment:v;display:flex;gap:.6em;align-items:baseline;font-family:var(--display);font-size:1.2em;font-style:italic;line-height:1.25}
+.vows li::before{content:counter(v);font-family:var(--ui);font-style:normal;font-size:.62em;font-weight:600;color:var(--paper);background:var(--wine);border-radius:50%;min-width:1.7em;height:1.7em;display:grid;place-items:center;transform:translateY(-.15em)}
+.epi{margin:auto 0;text-align:center}
+.epi p.e{font-family:var(--display);font-style:italic;font-size:1.55em;line-height:1.35;color:var(--ink)}
+.quote{font-family:var(--display);font-style:italic;font-size:1.3em;color:var(--wine);line-height:1.3;text-align:center;margin:.6em 0}
+</style>
+
+<div class="stage" id="stage">
+  <div id="book">
+
+    <!-- 1 · tapa -->
+    <div class="page cover" data-density="hard"><div class="in">
+      <p class="kick">Para Celia Vico López</p>
+      <svg class="ill" viewBox="0 0 200 120" aria-hidden="true">
+        <path class="fw" d="M100 30c-8-12-26-8-26 6 0 14 26 26 26 26s26-12 26-26c0-14-18-18-26-6z"/>
+        <path class="w draw" d="M100 30c-8-12-26-8-26 6 0 14 26 26 26 26s26-12 26-26c0-14-18-18-26-6z"/>
+        <path class="s draw d2" d="M30 78c25-10 50-8 70 6 20-14 45-16 70-6v34c-25-10-50-8-70 6-20-14-45-16-70-6z"/>
+        <path class="g draw d3" d="M100 84v34M42 88c16-5 32-4 46 3M112 91c14-7 30-8 46-3M42 98c16-5 32-4 46 3M112 101c14-7 30-8 46-3"/>
+      </svg>
+      <h1 style="font-size:3.5em">El próximo capítulo de Celia</h1>
+      <p class="sub">Donde el Derecho y las novelas se enamoran</p>
+    </div></div>
+
+    <!-- 2 · dedicatoria -->
+    <div class="page"><div class="in">
+      <div style="margin:auto 0;text-align:center">
+        <p class="orn">❦</p>
+        <p class="big">Para Celia, que lee entre líneas como nadie: en los contratos y en las novelas.</p>
+        <p class="orn">❦</p>
+        <p class="sm" style="margin-top:1.2em;font-style:italic">En estas páginas se abren tres caminos. Todos nacen de lo que sabes, todos desembocan en lo que amas, y en todos va escrito el mismo deseo: que el trabajo que te espera te quiera como tú quieres a las buenas historias.</p>
+      </div>
+      <p class="folio">ii</p>
+    </div></div>
+
+    <!-- 3 · protagonista -->
+    <div class="page"><div class="in">
+      <p class="kick">Prólogo</p>
+      <h2>La protagonista</h2>
+      <p>Derecho y Empresariales. Cuatro años de oficio entre un despacho de derecho bancario, un grupo bancario europeo y la logística de Madrid. Y algo que no se aprende en ninguna facultad:</p>
+      <p class="cite">«Según las personas que te conocen, eres la persona más justa y buena.»</p>
+      <p class="cite-by">— Cuadritos</p>
+      <div class="loves2">
+        <div><b>Lo que ama</b><ul><li>Las historias de amor</li><li>Leer, siempre</li><li>Que las cosas sean justas</li><li>Lo que tiene mucho en juego</li></ul></div>
+        <div><b>Lo que domina</b><ul><li>Contratos y Derecho</li><li>Números y crédito</li><li>Explicar con calma</li><li>Escribir con cuidado</li></ul></div>
+      </div>
+      <p class="folio">iii</p>
+    </div></div>
+
+    <!-- 3b · promesas -->
+    <div class="page"><div class="in">
+      <p class="kick">Prólogo</p>
+      <h2>Las cinco promesas</h2>
+      <p>Como en toda buena novela, la protagonista está en un momento de cambio. El trabajo en sí le gusta, pero la oficina le roba horas, el trabajo acumulado no la deja respirar y el sueldo no está a la altura de lo que sabe. Ha visto a su jefa ahogada en tareas y ha decidido que esa no será su historia.</p>
+      <p>Así que esta novela no busca un trabajo cualquiera. Busca uno que cumpla estas cinco promesas:</p>
+      <ol class="vows">
+        <li>Que la haga sentir orgullosa.</li>
+        <li>Que le pague lo que vale: mucho más que hoy.</li>
+        <li>Que respete su tiempo y su casa.</li>
+        <li>Que tenga algo de justicia dentro.</li>
+        <li>Que le deje espacio para leer, escribir y vivir.</li>
+      </ol>
+      <p class="folio">iv</p>
+    </div></div>
+
+    <!-- 4 · mapa -->
+    <div class="page"><div class="in">
+      <p class="kick">Cómo leer este libro</p>
+      <h2>Tres caminos, una protagonista</h2>
+      <div class="routes">
+        <div class="route"><svg viewBox="0 0 40 40" aria-hidden="true"><path class="s" d="M20 6v28M12 34h16M8 12h24"/><path class="g" d="M8 12l-5 11h10zM32 12l-5 11h10z"/></svg><div><b>I · La Toga</b><span>Lo que ya dominas, llevado a donde se paga y se respeta mejor.</span></div></div>
+        <div class="route"><svg viewBox="0 0 40 40" aria-hidden="true"><path class="w" d="M32 6C18 10 12 20 10 34M32 6c-2 10-8 18-18 22"/><path class="g" d="M8 34h10"/></svg><div><b>II · La Pluma</b><span>Lo que amas, convertido en oficio.</span></div></div>
+        <div class="route fav"><svg viewBox="0 0 40 40" aria-hidden="true"><path class="w" d="M20 14c-3-5-10-3-10 2 0 6 10 11 10 11s10-5 10-11c0-5-7-7-10-2z"/><path class="g" d="M6 32c5-3 9-3 14 0 5-3 9-3 14 0"/></svg><div><b>III · Cuando se enamoran</b><span>Las dos cosas a la vez. Aquí está el final que te recomiendo.</span></div></div>
+      </div>
+      <p class="quote">Tu Derecho es tu llave dorada: abre puertas laterales en el mundo de los libros que muy pocos conocen.</p>
+      <p class="folio">v</p>
+    </div></div>
+
+    <!-- 5 · Parte I portada -->
+    <div class="page partpage"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <path class="s draw" d="M100 14v84M70 98h60M52 30h96"/>
+        <path class="g draw d2" d="M52 30l-18 40h36zM148 30l-18 40h36z"/>
+        <path class="fw" d="M34 70c0 10 36 10 36 0zM130 70c0 10 36 10 36 0z"/>
+        <path class="w draw d3" d="M34 70c0 10 36 10 36 0M130 70c0 10 36 10 36 0"/>
+      </svg>
+      <p class="kick">Primera parte</p>
+      <h2>La Toga</h2>
+      <p class="sm">Banca, justicia y números: el mundo que ya conoces por dentro, esta vez a tu favor.</p>
+      <table style="margin-top:.6em">
+        <thead><tr><th>Historia</th><th>Al empezar</th><th>En 3–5 años</th></tr></thead>
+        <tbody>
+          <tr><td>La guardiana del dinero limpio</td><td>38–45 mil €</td><td>55–70 mil €</td></tr>
+          <tr><td>La abogada que planta cara a los bancos</td><td>32–42 mil €</td><td>60–100 mil €+</td></tr>
+          <tr><td>La que protege los ahorros de un país</td><td>43–55 mil €</td><td>60–75 mil €</td></tr>
+        </tbody>
+      </table>
+      <p class="sm" style="margin-top:.4em">Brutos al año. Hoy: unos 2.000 € al mes.</p>
+      <p class="folio">1</p>
+    </div></div>
+
+    <!-- 6 · Toga 1 -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <path class="fg" d="M100 10l44 16v26c0 28-20 44-44 52-24-8-44-24-44-52V26z"/>
+        <path class="s draw" d="M100 10l44 16v26c0 28-20 44-44 52-24-8-44-24-44-52V26z"/>
+        <path class="w draw d2" d="M100 44c-5-8-17-5-17 4 0 9 17 17 17 17s17-8 17-17c0-9-12-12-17-4z"/>
+        <path class="g draw d3" d="M76 84h48"/>
+      </svg>
+      <span class="chip">La Toga · la más rápida</span>
+      <h3>La guardiana del dinero limpio</h3>
+      <p class="sm">Cumplimiento normativo y prevención del blanqueo en banca o fintech</p>
+      <dl class="beats">
+        <dt>De qué va</dt><dd>Descubrir de dónde viene el dinero sospechoso y frenar el que viene del delito.</dd>
+        <dt>Por qué te haría feliz</dt><dd>Cada alerta es un misterio, como en una novela. Tiene el pulso del penal, encaja perfectamente con tu banca y es justicia silenciosa.</dd>
+      </dl>
+      <div class="money"><div><b>Al empezar</b><span>38–45 mil €</span></div><div><b>En 3–5 años</b><span>55–70 mil €</span></div></div>
+      <p class="sm"><strong>Primer capítulo:</strong> un curso de prevención del blanqueo y dos cafés con gente del sector.</p>
+      <p class="folio">2</p>
+    </div></div>
+
+    <!-- 7 · Toga 2 -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <rect class="fg" x="40" y="40" width="120" height="58" rx="3"/>
+        <path class="s draw" d="M30 40h140M100 12L30 40M100 12l70 28M48 46v46M76 46v46M124 46v46M152 46v46M30 98h140"/>
+        <path class="fw" d="M100 62c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3z"/>
+        <path class="w draw d3" d="M100 62c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3z"/>
+      </svg>
+      <span class="chip">La Toga · tu sueño de despacho</span>
+      <h3>La abogada que planta cara a los bancos</h3>
+      <p class="sm">Derecho bancario y del consumidor, y después tu despacho</p>
+      <dl class="beats">
+        <dt>De qué va</dt><dd>Defender a familias frente a cláusulas abusivas, tarjetas que ahogan y deudas mal cobradas.</dd>
+        <dt>Por qué te haría feliz</dt><dd>Argumentos, mucho en juego e historias reales. Ya hiciste prácticas en esto y conoces al banco por dentro.</dd>
+      </dl>
+      <div class="money"><div><b>Al empezar</b><span>32–42 mil €</span></div><div><b>Tu despacho</b><span>60–100 mil €+</span></div></div>
+      <p class="sm"><strong>Primer capítulo:</strong> informarte del máster de acceso a la abogacía a tiempo parcial.</p>
+      <p class="folio">3</p>
+    </div></div>
+
+    <!-- 8 · Toga 3 -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <circle class="fg" cx="100" cy="56" r="40"/>
+        <circle class="s draw" cx="100" cy="56" r="40"/>
+        <path class="g draw d2" d="M100 26v60M86 38h22a10 10 0 0 1 0 20H90a10 10 0 0 0 0 20h24"/>
+        <path class="w draw d3" d="M40 104h120"/>
+      </svg>
+      <span class="chip g">La Toga · equilibrio y prestigio</span>
+      <h3>La que protege los ahorros de un país</h3>
+      <p class="sm">Supervisora en el Banco de España o en la CNMV</p>
+      <dl class="beats">
+        <dt>De qué va</dt><dd>Vigilar que bancos y mercados cumplan las normas y no engañen a quien ahorra.</dd>
+        <dt>Por qué te haría feliz</dt><dd>Es exactamente tu cruce de Derecho, finanzas y banca. Está en Madrid, tiene un ritmo humano y siempre podrás decir con orgullo a qué te dedicas.</dd>
+      </dl>
+      <div class="money"><div><b>Al empezar</b><span>43–55 mil €</span></div><div><b>En 3–5 años</b><span>60–75 mil €</span></div></div>
+      <p class="sm"><strong>Primer capítulo:</strong> leer las bases de la última convocatoria del Banco de España.</p>
+      <p class="folio">4</p>
+    </div></div>
+
+    <!-- 9 · Parte II portada -->
+    <div class="page partpage"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <path class="w draw" d="M150 10C104 22 82 56 74 100M150 10c-6 30-30 56-62 70"/>
+        <path class="g draw d2" d="M60 100h40M118 34l-14 8M130 22l-12 6"/>
+      </svg>
+      <p class="kick">Segunda parte</p>
+      <h2>La Pluma</h2>
+      <p class="sm">Novelas, autoras y manuscritos: lo que te enamora, convertido en oficio.</p>
+      <table style="margin-top:.6em">
+        <thead><tr><th>Historia</th><th>Al empezar</th><th>Después</th></tr></thead>
+        <tbody>
+          <tr><td>La que encuentra las historias</td><td>22–30 mil €</td><td>40–80 mil €</td></tr>
+          <tr><td>La primera lectora</td><td>24–30 mil €</td><td>40–55 mil €</td></tr>
+          <tr><td>La autora</td><td colspan="2">Lo que valga tu historia</td></tr>
+        </tbody>
+      </table>
+      <p class="folio">5</p>
+    </div></div>
+
+    <!-- 10 · Pluma 1 -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <rect class="fg" x="44" y="22" width="112" height="72" rx="4"/>
+        <path class="s draw" d="M48 22h104a4 4 0 0 1 4 4v64a4 4 0 0 1-4 4H48a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4z"/>
+        <path class="g draw d2" d="M46 26l54 38 54-38"/>
+        <path class="fw" d="M100 70c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3z"/>
+        <path class="w draw d3" d="M100 70c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3z"/>
+      </svg>
+      <span class="chip y">La Pluma · tu Derecho como ventaja</span>
+      <h3>La que encuentra las historias</h3>
+      <p class="sm">Agente literaria</p>
+      <dl class="beats">
+        <dt>De qué va</dt><dd>Leer manuscritos, descubrir autoras, conseguirles editorial y negociar sus contratos. Ganas una parte de cada éxito.</dd>
+        <dt>Por qué te haría feliz</dt><dd>Lees por trabajo, apuestas por historias en las que crees y las defiendes con tu Derecho.</dd>
+      </dl>
+      <div class="money"><div><b>Al empezar</b><span>22–30 mil €</span></div><div><b>Con autoras</b><span>40–80 mil €</span></div></div>
+      <p class="sm"><strong>Primer capítulo:</strong> escribir a dos agencias literarias y preguntar cómo empezaron sus agentes.</p>
+      <p class="folio">6</p>
+    </div></div>
+
+    <!-- 11 · Pluma 2 -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <rect class="fg" x="40" y="14" width="96" height="86" rx="3"/>
+        <path class="s draw" d="M40 14h96v86H40z"/>
+        <path class="g draw d2" d="M52 32h72M52 44h72M52 56h52M52 68h66M52 80h40"/>
+        <path class="w draw d3" d="M160 18l14 14-52 52-18 4 4-18zM104 56c8 4 14 2 20-2"/>
+      </svg>
+      <span class="chip y">La Pluma · la más cercana a las historias</span>
+      <h3>La primera lectora</h3>
+      <p class="sm">Editora de novela romántica</p>
+      <dl class="beats">
+        <dt>De qué va</dt><dd>Elegir qué novelas se publican, trabajar el manuscrito con la autora y cuidar el libro hasta que llega a las librerías.</dd>
+        <dt>Por qué te haría feliz</dt><dd>Es lo más cerca de las historias que se puede estar, y tu Derecho te distingue de las demás editoras.</dd>
+      </dl>
+      <div class="money"><div><b>Al empezar</b><span>24–30 mil €</span></div><div><b>Sénior</b><span>40–55 mil €</span></div></div>
+      <p class="sm"><strong>Primer capítulo:</strong> entrar en un grupo editorial por contratos (tercera parte) y acercarte a edición desde dentro.</p>
+      <p class="folio">7</p>
+    </div></div>
+
+    <!-- 12 · Pluma 3 -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <rect class="fg" x="56" y="10" width="88" height="94" rx="8"/>
+        <path class="s draw" d="M64 10h72a8 8 0 0 1 8 8v78a8 8 0 0 1-8 8H64a8 8 0 0 1-8-8V18a8 8 0 0 1 8-8z"/>
+        <path class="g draw d2" d="M70 30h60M70 42h60M70 54h40"/>
+        <path class="fw" d="M100 70c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3z"/>
+        <path class="w draw d3" d="M100 70c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3zM150 30l20-20"/>
+      </svg>
+      <span class="chip y">La Pluma · empieza esta semana</span>
+      <h3>La autora</h3>
+      <p class="sm">Novelista romántica, con trama jurídica si quieres</p>
+      <dl class="beats">
+        <dt>De qué va</dt><dd>Escribir tu propia novela, con una abogada enamorada, un caso imposible y mucho en juego, y publicarla con editorial o por tu cuenta.</dd>
+        <dt>Por qué te haría feliz</dt><dd>Has leído mil historias: ahora toca la tuya. Y nadie conoce los juzgados y el amor a la vez como tú.</dd>
+      </dl>
+      <div class="money"><div><b>Cómo se gana</b><span>Anticipos y regalías</span></div><div><b>Cuándo</b><span>En paralelo, desde ya</span></div></div>
+      <p class="sm"><strong>Primer capítulo:</strong> 300 palabras en la tablet. Hoy.</p>
+      <p class="folio">8</p>
+    </div></div>
+
+    <!-- 13 · Parte III portada -->
+    <div class="page partpage"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <path class="g draw" d="M60 30v60M40 90h40M36 40h48M36 40l-10 22h20zM84 40l-10 22h20z"/>
+        <path class="w draw d2" d="M150 28c-10 6-18 22-20 62M150 28c-2 14-10 26-24 32"/>
+        <path class="fw" d="M105 46c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3z"/>
+        <path class="w draw d3" d="M105 46c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3z"/>
+      </svg>
+      <p class="kick">Tercera parte · el final que te recomiendo</p>
+      <h2>Cuando se enamoran</h2>
+      <p class="sm">La toga y la pluma en el mismo trabajo. Aquí se dan la mano lo que sabes y lo que amas.</p>
+      <table style="margin-top:.6em">
+        <thead><tr><th>Historia</th><th>Al empezar</th><th>En 3–5 años</th></tr></thead>
+        <tbody>
+          <tr><td>La guardiana de las historias</td><td>32–40 mil €</td><td>50–70 mil €</td></tr>
+          <tr><td>La abogada de las escritoras</td><td>32–42 mil €</td><td>60–90 mil €+</td></tr>
+          <tr><td>De la página a la pantalla</td><td>40–50 mil €</td><td>60–90 mil €</td></tr>
+        </tbody>
+      </table>
+      <p class="folio">9</p>
+    </div></div>
+
+    <!-- 14 · Balance 1 -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <rect class="fg" x="58" y="8" width="84" height="96" rx="4"/>
+        <path class="s draw" d="M62 8h76a4 4 0 0 1 4 4v88a4 4 0 0 1-4 4H62a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z"/>
+        <path class="g draw d2" d="M72 28h56M72 40h56M72 52h40M72 64h48"/>
+        <path class="fw" d="M118 82c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3z"/>
+        <path class="w draw d3" d="M118 82c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3zM72 86c6-6 10 6 16 0s8-4 12-2"/>
+      </svg>
+      <span class="chip">♥ La más recomendada</span>
+      <h3>La guardiana de las historias</h3>
+      <p class="sm">Contratos y derechos en un grupo editorial</p>
+      <dl class="beats">
+        <dt>De qué va</dt><dd>Firmar con las autoras y llevar cada novela a nuevas vidas: traducciones, audiolibros, ediciones de bolsillo.</dd>
+        <dt>Por qué te haría feliz</dt><dd>Vives rodeada de novelas y trabajas con tus dos carreras. Cada contrato es el comienzo de un libro.</dd>
+      </dl>
+      <div class="money"><div><b>Al empezar</b><span>32–40 mil €</span></div><div><b>En 3–5 años</b><span>50–70 mil €</span></div></div>
+      <p class="sm"><strong>Primer capítulo:</strong> busca «derechos y contratos» en las ofertas de los grupos editoriales con sede en Madrid.</p>
+      <p class="folio">10</p>
+    </div></div>
+
+    <!-- 15 · Balance 2 -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <path class="s draw" d="M100 14v84M70 98h60M52 30h96"/>
+        <path class="g draw d2" d="M52 30l-18 40h36zM148 30l-18 40h36z"/>
+        <path class="fw" d="M34 70c0 10 36 10 36 0z"/>
+        <path class="w draw d3" d="M38 60h28v10H38zM42 60v10M152 52c-4-6-13-4-13 3 0 7 13 13 13 13s13-6 13-13c0-7-9-9-13-3z"/>
+      </svg>
+      <span class="chip">♥ Tu despacho, con alma de libro</span>
+      <h3>La abogada de las escritoras</h3>
+      <p class="sm">Propiedad intelectual y derecho editorial</p>
+      <dl class="beats">
+        <dt>De qué va</dt><dd>Revisar los contratos de autoras y editoriales, proteger sus obras y reclamar cuando no se cumple lo pactado.</dd>
+        <dt>Por qué te haría feliz</dt><dd>Es justicia para quienes escriben las historias que amas. Y es tu sueño de despacho, con una causa.</dd>
+      </dl>
+      <div class="money"><div><b>Al empezar</b><span>32–42 mil €</span></div><div><b>Tu despacho</b><span>60–90 mil €+</span></div></div>
+      <p class="sm"><strong>Primer capítulo:</strong> un curso de propiedad intelectual en el sector editorial y un café con una abogada del ramo.</p>
+      <p class="folio">11</p>
+    </div></div>
+
+    <!-- 16 · Balance 3 -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <path class="s draw" d="M20 70c15-6 30-5 42 3 12-8 27-9 42-3v26c-15-6-30-5-42 3-12-8-27-9-42-3z"/>
+        <path class="g draw d2" d="M104 60c20-20 40-30 60-30"/>
+        <rect class="fg" x="120" y="14" width="64" height="44" rx="3"/>
+        <path class="w draw d3" d="M120 14h64v44h-64zM120 24h64M120 48h64M132 14v10M146 14v10M160 14v10M174 14v10M132 48v10M146 48v10M160 48v10M174 48v10"/>
+      </svg>
+      <span class="chip">♥ La mejor pagada de las tres</span>
+      <h3>De la página a la pantalla</h3>
+      <p class="sm">Derechos audiovisuales en productoras y plataformas</p>
+      <dl class="beats">
+        <dt>De qué va</dt><dd>Comprar los derechos de novelas para convertirlas en series y películas, y cerrar los contratos que lo hacen posible.</dd>
+        <dt>Por qué te haría feliz</dt><dd>Ayudas a que una historia de amor que te enamoró llegue a millones de personas en pantalla.</dd>
+      </dl>
+      <div class="money"><div><b>Al empezar</b><span>40–50 mil €</span></div><div><b>En 3–5 años</b><span>60–90 mil €</span></div></div>
+      <p class="sm"><strong>Primer capítulo:</strong> sigue en LinkedIn a los equipos jurídicos de las productoras españolas.</p>
+      <p class="folio">12</p>
+    </div></div>
+
+    <!-- 17 · cómo elegir -->
+    <div class="page"><div class="in">
+      <p class="kick">Antes de elegir</p>
+      <h2>Tres preguntas al corazón</h2>
+      <div class="ask">
+        <div><i>«Quiero sentirme segura y ganar más, pronto.»</i><span>→ Empieza por La Toga: la guardiana del dinero limpio.</span></div>
+        <div><i>«Quiero vivir entre historias, pase lo que pase.»</i><span>→ Empieza por La Pluma, y escribe la tuya en paralelo.</span></div>
+        <div><i>«Quiero las dos cosas y no renunciar a ninguna.»</i><span>→ Cuando se enamoran: la guardiana de las historias.</span></div>
+        <div><i>«Quiero mi propio despacho algún día.»</i><span>→ La abogada de los bancos o la de las escritoras. Las dos empiezan por el máster de acceso.</span></div>
+      </div>
+      <p class="quote" style="font-size:1.15em">No hace falta elegir el final hoy. Solo el siguiente capítulo.</p>
+      <p class="folio">13</p>
+    </div></div>
+
+    <!-- 18 · sin techo 1 -->
+    <div class="page"><div class="in">
+      <p class="kick">Epílogo</p>
+      <h2>Sin techo</h2>
+      <p class="sm">Querer lo mejor no es pedir demasiado. Es saber lo que vales.</p>
+      <div class="dream">
+        <span class="chip">La Toga</span>
+        <h3>Directora de Cumplimiento de un banco</h3>
+        <div class="arc">
+          <span class="a1"><b>Hoy</b>Derecho, ADE, banca y crédito.</span>
+          <span class="a2"><b>Podrías ser</b>La conciencia de una entidad, con el poder de decir «esto no se hace».</span>
+          <span class="a3"><b>Necesitarías</b>Crecer desde la guardiana del dinero limpio, inglés fluido y liderar equipos.</span>
+        </div>
+      </div>
+      <div class="dream">
+        <span class="chip y">La Pluma</span>
+        <h3>Fundadora de una agencia de novela romántica</h3>
+        <div class="arc">
+          <span class="a1"><b>Hoy</b>Conoces el género por dentro.</span>
+          <span class="a2"><b>Podrías ser</b>La agencia que descubre a las autoras románticas de la próxima década.</span>
+          <span class="a3"><b>Necesitarías</b>Unos años como agente y autoras que confíen en ti.</span>
+        </div>
+      </div>
+      <p class="folio">14</p>
+    </div></div>
+
+    <!-- 19 · sin techo 2 -->
+    <div class="page"><div class="in">
+      <div class="dream" style="border:0;margin:0;padding:0">
+        <span class="chip">Cuando se enamoran</span>
+        <h3>Directora de adaptaciones de una plataforma</h3>
+        <div class="arc">
+          <span class="a1"><b>Hoy</b>Lees romántica y sabes de contratos.</span>
+          <span class="a2"><b>Podrías ser</b>Quien elige qué novela será la próxima serie que todo el mundo ve.</span>
+          <span class="a3"><b>Necesitarías</b>Experiencia en derechos audiovisuales e inglés de negociación.</span>
+        </div>
+      </div>
+      <div class="dream">
+        <span class="chip">Cuando se enamoran</span>
+        <h3>El despacho de referencia de las escritoras</h3>
+        <div class="arc">
+          <span class="a1"><b>Hoy</b>Tu sueño de despacho y tu amor por los libros.</span>
+          <span class="a2"><b>Podrías ser</b>La abogada a la que acuden las autoras antes de firmar.</span>
+          <span class="a3"><b>Necesitarías</b>La habilitación, especializarte y una socia comercial.</span>
+        </div>
+      </div>
+      <div class="dream">
+        <span class="chip y">Sin condiciones</span>
+        <h3>Autora de una saga romántica con trama jurídica</h3>
+        <div class="arc">
+          <span class="a1"><b>Hoy</b>Una tablet nueva y mil novelas leídas.</span>
+          <span class="a2"><b>Podrías ser</b>La creadora de la abogada más enamorada de las librerías.</span>
+          <span class="a3"><b>Necesitarías</b>300 palabras casi cada día y terminar un borrador.</span>
+        </div>
+      </div>
+      <p class="folio">15</p>
+    </div></div>
+
+    <!-- 20 · la llave -->
+    <div class="page"><div class="in">
+      <svg class="ill" viewBox="0 0 200 110" aria-hidden="true">
+        <circle class="fg" cx="66" cy="56" r="26"/>
+        <circle class="g draw" cx="66" cy="56" r="26"/>
+        <path class="s draw d2" d="M92 56h80M150 56v18M166 56v12"/>
+        <path class="w draw d3" d="M66 50c-3-5-10-3-10 2 0 6 10 11 10 11s10-5 10-11c0-5-7-7-10-2z"/>
+      </svg>
+      <p class="kick">Para cualquier camino</p>
+      <h2>La llave de todas las puertas</h2>
+      <p><strong>1. Inglés hablado.</strong> Veinte minutos al día abren casi todas las puertas de este libro.</p>
+      <p><strong>2. Una mentora.</strong> Alguien que ya viva la historia que quieres.</p>
+      <p><strong>3. Leer con lápiz.</strong> Apunta qué te enamora de cada novela.</p>
+      <p><strong>4. Escribir en la tablet.</strong> Aunque sean diez minutos.</p>
+      <p><strong>5. Un LinkedIn con tu historia.</strong> «Derecho + ADE · contratos · enamorada de los libros».</p>
+      <p class="folio">16</p>
+    </div></div>
+
+    <!-- 21 · epígrafe -->
+    <div class="page"><div class="in">
+      <div class="epi">
+        <p class="orn">❦</p>
+        <p class="e">«De la vida no quiero mucho. Quiero apenas saber que intenté todo lo que quise, tuve todo lo que pude, amé todo lo que valía la pena y perdí apenas lo que nunca fue mío.»</p>
+        <p class="cite-by">— Atribuida a Pablo Neruda</p>
+        <p class="orn">❦</p>
+      </div>
+    </div></div>
+
+    <!-- 21b · carta -->
+    <div class="page"><div class="in letter">
+      <p>Celia:</p>
+      <p>Te conocí casi por casualidad. Y un día, sin darme cuenta, te convertiste en mi notificación favorita, en mi lugar seguro, en mi primer pensamiento de la mañana. Por eso quiero para ti lo mismo que tú das sin pedir nada: algo que te quiera bien.</p>
+      <p>En las novelas que te gustan, la protagonista nunca se conforma. Tú tampoco deberías. Mereces un trabajo que te haga sentir orgullosa, que respete tus tardes y que tenga dentro la justicia que llevas contigo a todas partes. La toga, la pluma o las dos de la mano: lo que elijas estará bien si te hace feliz.</p>
+      <p>Pase lo que pase, ya tienes a alguien en tu equipo. Para siempre.</p>
+      <p class="sig">Con todo mi amor,<br>tu fan número uno ♥</p>
+    </div></div>
+
+    <!-- 22 · contratapa -->
+    <div class="page cover" data-density="hard"><div class="in">
+      <h1 style="font-size:3.2em">Continuará…</h1>
+      <p class="sub">y esta vez la escribes tú.</p>
+      <p class="sub" style="margin-top:2.2em;font-size:1.7em">Me encantas ♥</p>
+    </div></div>
+
+  </div>
+  <nav class="bar" aria-label="Pasar página">
+    <button type="button" id="prev">‹ Anterior</button>
+    <span id="count">1 / 24</span>
+    <button type="button" id="next">Siguiente ›</button>
+  </nav>
+  <p class="hint">Arrastra la esquina de la página, tócala o usa los botones. En el móvil, gíralo para verlo más grande.</p>
+</div>
+
+<script>
+/* StPageFlip 2.0.7 — https://github.com/Nodlik/StPageFlip
+MIT License
+
+Copyright (c) 2020 Nodlik
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t=t||self).St={})}(this,(function(t){"use strict";class e{constructor(t,e){this.state={angle:0,area:[],position:{x:0,y:0},hardAngle:0,hardDrawingAngle:0},this.createdDensity=e,this.nowDrawingDensity=this.createdDensity,this.render=t}setDensity(t){this.createdDensity=t,this.nowDrawingDensity=t}setDrawingDensity(t){this.nowDrawingDensity=t}setPosition(t){this.state.position=t}setAngle(t){this.state.angle=t}setArea(t){this.state.area=t}setHardDrawingAngle(t){this.state.hardDrawingAngle=t}setHardAngle(t){this.state.hardAngle=t,this.state.hardDrawingAngle=t}setOrientation(t){this.orientation=t}getDrawingDensity(){return this.nowDrawingDensity}getDensity(){return this.createdDensity}getHardAngle(){return this.state.hardAngle}}class i extends e{constructor(t,e,i){super(t,i),this.image=null,this.isLoad=!1,this.loadingAngle=0,this.image=new Image,this.image.src=e}draw(t){const e=this.render.getContext(),i=this.render.convertToGlobal(this.state.position),s=this.render.getRect().pageWidth,n=this.render.getRect().height;e.save(),e.translate(i.x,i.y),e.beginPath();for(let t of this.state.area)null!==t&&(t=this.render.convertToGlobal(t),e.lineTo(t.x-i.x,t.y-i.y));e.rotate(this.state.angle),e.clip(),this.isLoad?e.drawImage(this.image,0,0,s,n):this.drawLoader(e,{x:0,y:0},s,n),e.restore()}simpleDraw(t){const e=this.render.getRect(),i=this.render.getContext(),s=e.pageWidth,n=e.height,h=1===t?e.left+e.pageWidth:e.left,r=e.top;this.isLoad?i.drawImage(this.image,h,r,s,n):this.drawLoader(i,{x:h,y:r},s,n)}drawLoader(t,e,i,s){t.beginPath(),t.strokeStyle="rgb(200, 200, 200)",t.fillStyle="rgb(255, 255, 255)",t.lineWidth=1,t.rect(e.x+1,e.y+1,i-1,s-1),t.stroke(),t.fill();const n={x:e.x+i/2,y:e.y+s/2};t.beginPath(),t.lineWidth=10,t.arc(n.x,n.y,20,this.loadingAngle,3*Math.PI/2+this.loadingAngle),t.stroke(),t.closePath(),this.loadingAngle+=.07,this.loadingAngle>=2*Math.PI&&(this.loadingAngle=0)}load(){this.isLoad||(this.image.onload=()=>{this.isLoad=!0})}newTemporaryCopy(){return this}getTemporaryCopy(){return this}hideTemporaryCopy(){}}class s{constructor(t,e){this.pages=[],this.currentPageIndex=0,this.currentSpreadIndex=0,this.landscapeSpread=[],this.portraitSpread=[],this.render=e,this.app=t,this.currentPageIndex=0,this.isShowCover=this.app.getSettings().showCover}destroy(){this.pages=[]}createSpread(){this.landscapeSpread=[],this.portraitSpread=[];for(let t=0;t<this.pages.length;t++)this.portraitSpread.push([t]);let t=0;this.isShowCover&&(this.pages[0].setDensity("hard"),this.landscapeSpread.push([t]),t++);for(let e=t;e<this.pages.length;e+=2)e<this.pages.length-1?this.landscapeSpread.push([e,e+1]):(this.landscapeSpread.push([e]),this.pages[e].setDensity("hard"))}getSpread(){return"landscape"===this.render.getOrientation()?this.landscapeSpread:this.portraitSpread}getSpreadIndexByPage(t){const e=this.getSpread();for(let i=0;i<e.length;i++)if(t===e[i][0]||t===e[i][1])return i;return null}getPageCount(){return this.pages.length}getPages(){return this.pages}getPage(t){if(t>=0&&t<this.pages.length)return this.pages[t];throw new Error("Invalid page number")}nextBy(t){const e=this.pages.indexOf(t);return e<this.pages.length-1?this.pages[e+1]:null}prevBy(t){const e=this.pages.indexOf(t);return e>0?this.pages[e-1]:null}getFlippingPage(t){const e=this.currentSpreadIndex;if("portrait"===this.render.getOrientation())return 0===t?this.pages[e].newTemporaryCopy():this.pages[e-1];{const i=0===t?this.getSpread()[e+1]:this.getSpread()[e-1];return 1===i.length||0===t?this.pages[i[0]]:this.pages[i[1]]}}getBottomPage(t){const e=this.currentSpreadIndex;if("portrait"===this.render.getOrientation())return 0===t?this.pages[e+1]:this.pages[e-1];{const i=0===t?this.getSpread()[e+1]:this.getSpread()[e-1];return 1===i.length?this.pages[i[0]]:0===t?this.pages[i[1]]:this.pages[i[0]]}}showNext(){this.currentSpreadIndex<this.getSpread().length&&(this.currentSpreadIndex++,this.showSpread())}showPrev(){this.currentSpreadIndex>0&&(this.currentSpreadIndex--,this.showSpread())}getCurrentPageIndex(){return this.currentPageIndex}show(t=null){if(null===t&&(t=this.currentPageIndex),t<0||t>=this.pages.length)return;const e=this.getSpreadIndexByPage(t);null!==e&&(this.currentSpreadIndex=e,this.showSpread())}getCurrentSpreadIndex(){return this.currentSpreadIndex}setCurrentSpreadIndex(t){if(!(t>=0&&t<this.getSpread().length))throw new Error("Invalid page");this.currentSpreadIndex=t}showSpread(){const t=this.getSpread()[this.currentSpreadIndex];2===t.length?(this.render.setLeftPage(this.pages[t[0]]),this.render.setRightPage(this.pages[t[1]])):"landscape"===this.render.getOrientation()&&t[0]===this.pages.length-1?(this.render.setLeftPage(this.pages[t[0]]),this.render.setRightPage(null)):(this.render.setLeftPage(null),this.render.setRightPage(this.pages[t[0]])),this.currentPageIndex=t[0],this.app.updatePageIndex(this.currentPageIndex)}}class n extends s{constructor(t,e,i){super(t,e),this.imagesHref=i}load(){for(const t of this.imagesHref){const e=new i(this.render,t,"soft");e.load(),this.pages.push(e)}this.createSpread()}}class h{static GetDistanceBetweenTwoPoint(t,e){return null===t||null===e?1/0:Math.sqrt(Math.pow(e.x-t.x,2)+Math.pow(e.y-t.y,2))}static GetSegmentLength(t){return h.GetDistanceBetweenTwoPoint(t[0],t[1])}static GetAngleBetweenTwoLine(t,e){const i=t[0].y-t[1].y,s=e[0].y-e[1].y,n=t[1].x-t[0].x,h=e[1].x-e[0].x;return Math.acos((i*s+n*h)/(Math.sqrt(i*i+n*n)*Math.sqrt(s*s+h*h)))}static PointInRect(t,e){return null===e?null:e.x>=t.left&&e.x<=t.width+t.left&&e.y>=t.top&&e.y<=t.top+t.height?e:null}static GetRotatedPoint(t,e,i){return{x:t.x*Math.cos(i)+t.y*Math.sin(i)+e.x,y:t.y*Math.cos(i)-t.x*Math.sin(i)+e.y}}static LimitPointToCircle(t,e,i){if(h.GetDistanceBetweenTwoPoint(t,i)<=e)return i;const s=t.x,n=t.y,r=i.x,o=i.y;let a=Math.sqrt(Math.pow(e,2)*Math.pow(s-r,2)/(Math.pow(s-r,2)+Math.pow(n-o,2)))+s;i.x<0&&(a*=-1);let g=(a-s)*(n-o)/(s-r)+n;return s-r+n===0&&(g=e),{x:a,y:g}}static GetIntersectBetweenTwoSegment(t,e,i){return h.PointInRect(t,h.GetIntersectBeetwenTwoLine(e,i))}static GetIntersectBeetwenTwoLine(t,e){const i=t[0].y-t[1].y,s=e[0].y-e[1].y,n=t[1].x-t[0].x,h=e[1].x-e[0].x,r=t[0].x*t[1].y-t[1].x*t[0].y,o=e[0].x*e[1].y-e[1].x*e[0].y,a=i*o-s*r,g=n*o-h*r,l=-(r*h-o*n)/(i*h-s*n),d=-(i*o-s*r)/(i*h-s*n);if(isFinite(l)&&isFinite(d))return{x:l,y:d};if(Math.abs(a-g)<.1)throw new Error("Segment included");return null}static GetCordsFromTwoPoint(t,e){const i=Math.abs(t.x-e.x),s=Math.abs(t.y-e.y),n=Math.max(i,s),h=[t];function r(t,e,i,s,n){return e>t?t+n*(i/s):e<t?t-n*(i/s):t}for(let o=1;o<=n;o+=1)h.push({x:r(t.x,e.x,i,n,o),y:r(t.y,e.y,s,n,o)});return h}}class r extends e{constructor(t,e,i){super(t,i),this.copiedElement=null,this.temporaryCopy=null,this.isLoad=!1,this.element=e,this.element.classList.add("stf__item"),this.element.classList.add("--"+i)}newTemporaryCopy(){return"hard"===this.nowDrawingDensity?this:(null===this.temporaryCopy&&(this.copiedElement=this.element.cloneNode(!0),this.element.parentElement.appendChild(this.copiedElement),this.temporaryCopy=new r(this.render,this.copiedElement,this.nowDrawingDensity)),this.getTemporaryCopy())}getTemporaryCopy(){return this.temporaryCopy}hideTemporaryCopy(){null!==this.temporaryCopy&&(this.copiedElement.remove(),this.copiedElement=null,this.temporaryCopy=null)}draw(t){const e=t||this.nowDrawingDensity,i=this.render.convertToGlobal(this.state.position),s=this.render.getRect().pageWidth,n=this.render.getRect().height;this.element.classList.remove("--simple");const h=`\n            display: block;\n            z-index: ${this.element.style.zIndex};\n            left: 0;\n            top: 0;\n            width: ${s}px;\n            height: ${n}px;\n        `;"hard"===e?this.drawHard(h):this.drawSoft(i,h)}drawHard(t=""){const e=this.render.getRect().left+this.render.getRect().width/2,i=this.state.hardDrawingAngle,s=t+"\n                backface-visibility: hidden;\n                -webkit-backface-visibility: hidden;\n                clip-path: none;\n                -webkit-clip-path: none;\n            "+(0===this.orientation?`transform-origin: ${this.render.getRect().pageWidth}px 0; \n                   transform: translate3d(0, 0, 0) rotateY(${i}deg);`:`transform-origin: 0 0; \n                   transform: translate3d(${e}px, 0, 0) rotateY(${i}deg);`);this.element.style.cssText=s}drawSoft(t,e=""){let i="polygon( ";for(const t of this.state.area)if(null!==t){let e=1===this.render.getDirection()?{x:-t.x+this.state.position.x,y:t.y-this.state.position.y}:{x:t.x-this.state.position.x,y:t.y-this.state.position.y};e=h.GetRotatedPoint(e,{x:0,y:0},this.state.angle),i+=e.x+"px "+e.y+"px, "}i=i.slice(0,-2),i+=")";const s=e+`transform-origin: 0 0; clip-path: ${i}; -webkit-clip-path: ${i};`+(this.render.isSafari()&&0===this.state.angle?`transform: translate(${t.x}px, ${t.y}px);`:`transform: translate3d(${t.x}px, ${t.y}px, 0) rotate(${this.state.angle}rad);`);this.element.style.cssText=s}simpleDraw(t){const e=this.render.getRect(),i=e.pageWidth,s=e.height,n=1===t?e.left+e.pageWidth:e.left,h=e.top;this.element.classList.add("--simple"),this.element.style.cssText=`\n            position: absolute; \n            display: block; \n            height: ${s}px; \n            left: ${n}px; \n            top: ${h}px; \n            width: ${i}px; \n            z-index: ${this.render.getSettings().startZIndex+1};`}getElement(){return this.element}load(){this.isLoad=!0}setOrientation(t){super.setOrientation(t),this.element.classList.remove("--left","--right"),this.element.classList.add(1===t?"--right":"--left")}setDrawingDensity(t){this.element.classList.remove("--soft","--hard"),this.element.classList.add("--"+t),super.setDrawingDensity(t)}}class o extends s{constructor(t,e,i,s){super(t,e),this.element=i,this.pagesElement=s}load(){for(const t of this.pagesElement){const e=new r(this.render,t,"hard"===t.dataset.density?"hard":"soft");e.load(),this.pages.push(e)}this.createSpread()}}class a{constructor(t,e,i,s){this.direction=t,this.corner=e,this.topIntersectPoint=null,this.sideIntersectPoint=null,this.bottomIntersectPoint=null,this.pageWidth=parseInt(i,10),this.pageHeight=parseInt(s,10)}calc(t){try{return this.position=this.calcAngleAndPosition(t),this.calculateIntersectPoint(this.position),!0}catch(t){return!1}}getFlippingClipArea(){const t=[];let e=!1;return t.push(this.rect.topLeft),t.push(this.topIntersectPoint),null===this.sideIntersectPoint?e=!0:(t.push(this.sideIntersectPoint),null===this.bottomIntersectPoint&&(e=!1)),t.push(this.bottomIntersectPoint),(e||"bottom"===this.corner)&&t.push(this.rect.bottomLeft),t}getBottomClipArea(){const t=[];return t.push(this.topIntersectPoint),"top"===this.corner?t.push({x:this.pageWidth,y:0}):(null!==this.topIntersectPoint&&t.push({x:this.pageWidth,y:0}),t.push({x:this.pageWidth,y:this.pageHeight})),null!==this.sideIntersectPoint?h.GetDistanceBetweenTwoPoint(this.sideIntersectPoint,this.topIntersectPoint)>=10&&t.push(this.sideIntersectPoint):"top"===this.corner&&t.push({x:this.pageWidth,y:this.pageHeight}),t.push(this.bottomIntersectPoint),t.push(this.topIntersectPoint),t}getAngle(){return 0===this.direction?-this.angle:this.angle}getRect(){return this.rect}getPosition(){return this.position}getActiveCorner(){return 0===this.direction?this.rect.topLeft:this.rect.topRight}getDirection(){return this.direction}getFlippingProgress(){return Math.abs((this.position.x-this.pageWidth)/(2*this.pageWidth)*100)}getCorner(){return this.corner}getBottomPagePosition(){return 1===this.direction?{x:this.pageWidth,y:0}:{x:0,y:0}}getShadowStartPoint(){return"top"===this.corner?this.topIntersectPoint:null!==this.sideIntersectPoint?this.sideIntersectPoint:this.topIntersectPoint}getShadowAngle(){const t=h.GetAngleBetweenTwoLine(this.getSegmentToShadowLine(),[{x:0,y:0},{x:this.pageWidth,y:0}]);return 0===this.direction?t:Math.PI-t}calcAngleAndPosition(t){let e=t;if(this.updateAngleAndGeometry(e),e="top"===this.corner?this.checkPositionAtCenterLine(e,{x:0,y:0},{x:0,y:this.pageHeight}):this.checkPositionAtCenterLine(e,{x:0,y:this.pageHeight},{x:0,y:0}),Math.abs(e.x-this.pageWidth)<1&&Math.abs(e.y)<1)throw new Error("Point is too small");return e}updateAngleAndGeometry(t){this.angle=this.calculateAngle(t),this.rect=this.getPageRect(t)}calculateAngle(t){const e=this.pageWidth-t.x+1,i="bottom"===this.corner?this.pageHeight-t.y:t.y;let s=2*Math.acos(e/Math.sqrt(i*i+e*e));i<0&&(s=-s);const n=Math.PI-s;if(!isFinite(s)||n>=0&&n<.003)throw new Error("The G point is too small");return"bottom"===this.corner&&(s=-s),s}getPageRect(t){return"top"===this.corner?this.getRectFromBasePoint([{x:0,y:0},{x:this.pageWidth,y:0},{x:0,y:this.pageHeight},{x:this.pageWidth,y:this.pageHeight}],t):this.getRectFromBasePoint([{x:0,y:-this.pageHeight},{x:this.pageWidth,y:-this.pageHeight},{x:0,y:0},{x:this.pageWidth,y:0}],t)}getRectFromBasePoint(t,e){return{topLeft:this.getRotatedPoint(t[0],e),topRight:this.getRotatedPoint(t[1],e),bottomLeft:this.getRotatedPoint(t[2],e),bottomRight:this.getRotatedPoint(t[3],e)}}getRotatedPoint(t,e){return{x:t.x*Math.cos(this.angle)+t.y*Math.sin(this.angle)+e.x,y:t.y*Math.cos(this.angle)-t.x*Math.sin(this.angle)+e.y}}calculateIntersectPoint(t){const e={left:-1,top:-1,width:this.pageWidth+2,height:this.pageHeight+2};"top"===this.corner?(this.topIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[t,this.rect.topRight],[{x:0,y:0},{x:this.pageWidth,y:0}]),this.sideIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[t,this.rect.bottomLeft],[{x:this.pageWidth,y:0},{x:this.pageWidth,y:this.pageHeight}]),this.bottomIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[this.rect.bottomLeft,this.rect.bottomRight],[{x:0,y:this.pageHeight},{x:this.pageWidth,y:this.pageHeight}])):(this.topIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[this.rect.topLeft,this.rect.topRight],[{x:0,y:0},{x:this.pageWidth,y:0}]),this.sideIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[t,this.rect.topLeft],[{x:this.pageWidth,y:0},{x:this.pageWidth,y:this.pageHeight}]),this.bottomIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[this.rect.bottomLeft,this.rect.bottomRight],[{x:0,y:this.pageHeight},{x:this.pageWidth,y:this.pageHeight}]))}checkPositionAtCenterLine(t,e,i){let s=t;const n=h.LimitPointToCircle(e,this.pageWidth,s);s!==n&&(s=n,this.updateAngleAndGeometry(s));const r=Math.sqrt(Math.pow(this.pageWidth,2)+Math.pow(this.pageHeight,2));let o=this.rect.bottomRight,a=this.rect.topLeft;if("bottom"===this.corner&&(o=this.rect.topRight,a=this.rect.bottomLeft),o.x<=0){const t=h.LimitPointToCircle(i,r,a);t!==s&&(s=t,this.updateAngleAndGeometry(s))}return s}getSegmentToShadowLine(){const t=this.getShadowStartPoint();return[t,t!==this.sideIntersectPoint&&null!==this.sideIntersectPoint?this.sideIntersectPoint:this.bottomIntersectPoint]}}class g{constructor(t,e){this.flippingPage=null,this.bottomPage=null,this.calc=null,this.state="read",this.render=t,this.app=e}fold(t){this.setState("user_fold"),null===this.calc&&this.start(t),this.do(this.render.convertToPage(t))}flip(t){if(this.app.getSettings().disableFlipByClick&&!this.isPointOnCorners(t))return;if(null!==this.calc&&this.render.finishAnimation(),!this.start(t))return;const e=this.getBoundsRect();this.setState("flipping");const i=e.height/10,s="bottom"===this.calc.getCorner()?e.height-i:i,n="bottom"===this.calc.getCorner()?e.height:0;this.calc.calc({x:e.pageWidth-i,y:s}),this.animateFlippingTo({x:e.pageWidth-i,y:s},{x:-e.pageWidth,y:n},!0)}start(t){this.reset();const e=this.render.convertToBook(t),i=this.getBoundsRect(),s=this.getDirectionByPoint(e),n=e.y>=i.height/2?"bottom":"top";if(!this.checkDirection(s))return!1;try{if(this.flippingPage=this.app.getPageCollection().getFlippingPage(s),this.bottomPage=this.app.getPageCollection().getBottomPage(s),"landscape"===this.render.getOrientation())if(1===s){const t=this.app.getPageCollection().nextBy(this.flippingPage);null!==t&&this.flippingPage.getDensity()!==t.getDensity()&&(this.flippingPage.setDrawingDensity("hard"),t.setDrawingDensity("hard"))}else{const t=this.app.getPageCollection().prevBy(this.flippingPage);null!==t&&this.flippingPage.getDensity()!==t.getDensity()&&(this.flippingPage.setDrawingDensity("hard"),t.setDrawingDensity("hard"))}return this.render.setDirection(s),this.calc=new a(s,n,i.pageWidth.toString(10),i.height.toString(10)),!0}catch(t){return!1}}do(t){if(null!==this.calc&&this.calc.calc(t)){const t=this.calc.getFlippingProgress();this.bottomPage.setArea(this.calc.getBottomClipArea()),this.bottomPage.setPosition(this.calc.getBottomPagePosition()),this.bottomPage.setAngle(0),this.bottomPage.setHardAngle(0),this.flippingPage.setArea(this.calc.getFlippingClipArea()),this.flippingPage.setPosition(this.calc.getActiveCorner()),this.flippingPage.setAngle(this.calc.getAngle()),0===this.calc.getDirection()?this.flippingPage.setHardAngle(90*(200-2*t)/100):this.flippingPage.setHardAngle(-90*(200-2*t)/100),this.render.setPageRect(this.calc.getRect()),this.render.setBottomPage(this.bottomPage),this.render.setFlippingPage(this.flippingPage),this.render.setShadowData(this.calc.getShadowStartPoint(),this.calc.getShadowAngle(),t,this.calc.getDirection())}}flipToPage(t,e){const i=this.app.getPageCollection().getCurrentSpreadIndex(),s=this.app.getPageCollection().getSpreadIndexByPage(t);try{s>i&&(this.app.getPageCollection().setCurrentSpreadIndex(s-1),this.flipNext(e)),s<i&&(this.app.getPageCollection().setCurrentSpreadIndex(s+1),this.flipPrev(e))}catch(t){}}flipNext(t){this.flip({x:this.render.getRect().left+2*this.render.getRect().pageWidth-10,y:"top"===t?1:this.render.getRect().height-2})}flipPrev(t){this.flip({x:10,y:"top"===t?1:this.render.getRect().height-2})}stopMove(){if(null===this.calc)return;const t=this.calc.getPosition(),e=this.getBoundsRect(),i="bottom"===this.calc.getCorner()?e.height:0;t.x<=0?this.animateFlippingTo(t,{x:-e.pageWidth,y:i},!0):this.animateFlippingTo(t,{x:e.pageWidth,y:i},!1)}showCorner(t){if(!this.checkState("read","fold_corner"))return;const e=this.getBoundsRect(),i=e.pageWidth;if(this.isPointOnCorners(t))if(null===this.calc){if(!this.start(t))return;this.setState("fold_corner"),this.calc.calc({x:i-1,y:1});const s=50,n="bottom"===this.calc.getCorner()?e.height-1:1,h="bottom"===this.calc.getCorner()?e.height-s:s;this.animateFlippingTo({x:i-1,y:n},{x:i-s,y:h},!1,!1)}else this.do(this.render.convertToPage(t));else this.setState("read"),this.render.finishAnimation(),this.stopMove()}animateFlippingTo(t,e,i,s=!0){const n=h.GetCordsFromTwoPoint(t,e),r=[];for(const t of n)r.push(()=>this.do(t));const o=this.getAnimationDuration(n.length);this.render.startAnimation(r,o,()=>{this.calc&&(i&&(1===this.calc.getDirection()?this.app.turnToPrevPage():this.app.turnToNextPage()),s&&(this.render.setBottomPage(null),this.render.setFlippingPage(null),this.render.clearShadow(),this.setState("read"),this.reset()))})}getCalculation(){return this.calc}getState(){return this.state}setState(t){this.state!==t&&(this.app.updateState(t),this.state=t)}getDirectionByPoint(t){const e=this.getBoundsRect();if("portrait"===this.render.getOrientation()){if(t.x-e.pageWidth<=e.width/5)return 1}else if(t.x<e.width/2)return 1;return 0}getAnimationDuration(t){const e=this.app.getSettings().flippingTime;return t>=1e3?e:t/1e3*e}checkDirection(t){return 0===t?this.app.getCurrentPageIndex()<this.app.getPageCount()-1:this.app.getCurrentPageIndex()>=1}reset(){this.calc=null,this.flippingPage=null,this.bottomPage=null}getBoundsRect(){return this.render.getRect()}checkState(...t){for(const e of t)if(this.state===e)return!0;return!1}isPointOnCorners(t){const e=this.getBoundsRect(),i=e.pageWidth,s=Math.sqrt(Math.pow(i,2)+Math.pow(e.height,2))/5,n=this.render.convertToBook(t);return n.x>0&&n.y>0&&n.x<e.width&&n.y<e.height&&(n.x<s||n.x>e.width-s)&&(n.y<s||n.y>e.height-s)}}class l{constructor(t,e){this.leftPage=null,this.rightPage=null,this.flippingPage=null,this.bottomPage=null,this.direction=null,this.orientation=null,this.shadow=null,this.animation=null,this.pageRect=null,this.boundsRect=null,this.timer=0,this.safari=!1,this.setting=e,this.app=t;const i=new RegExp("Version\\/[\\d\\.]+.*Safari/");this.safari=null!==i.exec(window.navigator.userAgent)}render(t){if(null!==this.animation){const e=Math.round((t-this.animation.startedAt)/this.animation.durationFrame);e<this.animation.frames.length?this.animation.frames[e]():(this.animation.onAnimateEnd(),this.animation=null)}this.timer=t,this.drawFrame()}start(){this.update();const t=e=>{this.render(e),requestAnimationFrame(t)};requestAnimationFrame(t)}startAnimation(t,e,i){this.finishAnimation(),this.animation={frames:t,duration:e,durationFrame:e/t.length,onAnimateEnd:i,startedAt:this.timer}}finishAnimation(){null!==this.animation&&(this.animation.frames[this.animation.frames.length-1](),null!==this.animation.onAnimateEnd&&this.animation.onAnimateEnd()),this.animation=null}update(){this.boundsRect=null;const t=this.calculateBoundsRect();this.orientation!==t&&(this.orientation=t,this.app.updateOrientation(t))}calculateBoundsRect(){let t="landscape";const e=this.getBlockWidth(),i=e/2,s=this.getBlockHeight()/2,n=this.setting.width/this.setting.height;let h=this.setting.width,r=this.setting.height,o=i-h;return"stretch"===this.setting.size?(e<2*this.setting.minWidth&&this.app.getSettings().usePortrait&&(t="portrait"),h="portrait"===t?this.getBlockWidth():this.getBlockWidth()/2,h>this.setting.maxWidth&&(h=this.setting.maxWidth),r=h/n,r>this.getBlockHeight()&&(r=this.getBlockHeight(),h=r*n),o="portrait"===t?i-h/2-h:i-h):e<2*h&&this.app.getSettings().usePortrait&&(t="portrait",o=i-h/2-h),this.boundsRect={left:o,top:s-r/2,width:2*h,height:r,pageWidth:h},t}setShadowData(t,e,i,s){if(!this.app.getSettings().drawShadow)return;const n=100*this.getSettings().maxShadowOpacity;this.shadow={pos:t,angle:e,width:3*this.getRect().pageWidth/4*i/100,opacity:(100-i)*n/100/100,direction:s,progress:2*i}}clearShadow(){this.shadow=null}getBlockWidth(){return this.app.getUI().getDistElement().offsetWidth}getBlockHeight(){return this.app.getUI().getDistElement().offsetHeight}getDirection(){return this.direction}getRect(){return null===this.boundsRect&&this.calculateBoundsRect(),this.boundsRect}getSettings(){return this.app.getSettings()}getOrientation(){return this.orientation}setPageRect(t){this.pageRect=t}setDirection(t){this.direction=t}setRightPage(t){null!==t&&t.setOrientation(1),this.rightPage=t}setLeftPage(t){null!==t&&t.setOrientation(0),this.leftPage=t}setBottomPage(t){null!==t&&t.setOrientation(1===this.direction?0:1),this.bottomPage=t}setFlippingPage(t){null!==t&&t.setOrientation(0===this.direction&&"portrait"!==this.orientation?0:1),this.flippingPage=t}convertToBook(t){const e=this.getRect();return{x:t.x-e.left,y:t.y-e.top}}isSafari(){return this.safari}convertToPage(t,e){e||(e=this.direction);const i=this.getRect();return{x:0===e?t.x-i.left-i.width/2:i.width/2-t.x+i.left,y:t.y-i.top}}convertToGlobal(t,e){if(e||(e=this.direction),null==t)return null;const i=this.getRect();return{x:0===e?t.x+i.left+i.width/2:i.width/2-t.x+i.left,y:t.y+i.top}}convertRectToGlobal(t,e){return e||(e=this.direction),{topLeft:this.convertToGlobal(t.topLeft,e),topRight:this.convertToGlobal(t.topRight,e),bottomLeft:this.convertToGlobal(t.bottomLeft,e),bottomRight:this.convertToGlobal(t.bottomRight,e)}}}class d extends l{constructor(t,e,i){super(t,e),this.canvas=i,this.ctx=i.getContext("2d")}getContext(){return this.ctx}reload(){}drawFrame(){this.clear(),"portrait"!==this.orientation&&null!=this.leftPage&&this.leftPage.simpleDraw(0),null!=this.rightPage&&this.rightPage.simpleDraw(1),null!=this.bottomPage&&this.bottomPage.draw(),this.drawBookShadow(),null!=this.flippingPage&&this.flippingPage.draw(),null!=this.shadow&&(this.drawOuterShadow(),this.drawInnerShadow());const t=this.getRect();"portrait"===this.orientation&&(this.ctx.beginPath(),this.ctx.rect(t.left+t.pageWidth,t.top,t.width,t.height),this.ctx.clip())}drawBookShadow(){const t=this.getRect();this.ctx.save(),this.ctx.beginPath();const e=t.width/20;this.ctx.rect(t.left,t.top,t.width,t.height);const i={x:t.left+t.width/2-e/2,y:0};this.ctx.translate(i.x,i.y);const s=this.ctx.createLinearGradient(0,0,e,0);s.addColorStop(0,"rgba(0, 0, 0, 0)"),s.addColorStop(.4,"rgba(0, 0, 0, 0.2)"),s.addColorStop(.49,"rgba(0, 0, 0, 0.1)"),s.addColorStop(.5,"rgba(0, 0, 0, 0.5)"),s.addColorStop(.51,"rgba(0, 0, 0, 0.4)"),s.addColorStop(1,"rgba(0, 0, 0, 0)"),this.ctx.clip(),this.ctx.fillStyle=s,this.ctx.fillRect(0,0,e,2*t.height),this.ctx.restore()}drawOuterShadow(){const t=this.getRect();this.ctx.save(),this.ctx.beginPath(),this.ctx.rect(t.left,t.top,t.width,t.height);const e=this.convertToGlobal({x:this.shadow.pos.x,y:this.shadow.pos.y});this.ctx.translate(e.x,e.y),this.ctx.rotate(Math.PI+this.shadow.angle+Math.PI/2);const i=this.ctx.createLinearGradient(0,0,this.shadow.width,0);0===this.shadow.direction?(this.ctx.translate(0,-100),i.addColorStop(0,"rgba(0, 0, 0, "+this.shadow.opacity+")"),i.addColorStop(1,"rgba(0, 0, 0, 0)")):(this.ctx.translate(-this.shadow.width,-100),i.addColorStop(0,"rgba(0, 0, 0, 0)"),i.addColorStop(1,"rgba(0, 0, 0, "+this.shadow.opacity+")")),this.ctx.clip(),this.ctx.fillStyle=i,this.ctx.fillRect(0,0,this.shadow.width,2*t.height),this.ctx.restore()}drawInnerShadow(){const t=this.getRect();this.ctx.save(),this.ctx.beginPath();const e=this.convertToGlobal({x:this.shadow.pos.x,y:this.shadow.pos.y}),i=this.convertRectToGlobal(this.pageRect);this.ctx.moveTo(i.topLeft.x,i.topLeft.y),this.ctx.lineTo(i.topRight.x,i.topRight.y),this.ctx.lineTo(i.bottomRight.x,i.bottomRight.y),this.ctx.lineTo(i.bottomLeft.x,i.bottomLeft.y),this.ctx.translate(e.x,e.y),this.ctx.rotate(Math.PI+this.shadow.angle+Math.PI/2);const s=3*this.shadow.width/4,n=this.ctx.createLinearGradient(0,0,s,0);0===this.shadow.direction?(this.ctx.translate(-s,-100),n.addColorStop(1,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(.9,"rgba(0, 0, 0, 0.05)"),n.addColorStop(.7,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(0,"rgba(0, 0, 0, 0)")):(this.ctx.translate(0,-100),n.addColorStop(0,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(.1,"rgba(0, 0, 0, 0.05)"),n.addColorStop(.3,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(1,"rgba(0, 0, 0, 0)")),this.ctx.clip(),this.ctx.fillStyle=n,this.ctx.fillRect(0,0,s,2*t.height),this.ctx.restore()}clear(){this.ctx.fillStyle="white",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height)}}class p{constructor(t,e,i){this.touchPoint=null,this.swipeTimeout=250,this.onResize=()=>{this.update()},this.onMouseDown=t=>{if(this.checkTarget(t.target)){const e=this.getMousePos(t.clientX,t.clientY);this.app.startUserTouch(e),t.preventDefault()}},this.onTouchStart=t=>{if(this.checkTarget(t.target)&&t.changedTouches.length>0){const e=t.changedTouches[0],i=this.getMousePos(e.clientX,e.clientY);this.touchPoint={point:i,time:Date.now()},setTimeout(()=>{null!==this.touchPoint&&this.app.startUserTouch(i)},this.swipeTimeout),this.app.getSettings().mobileScrollSupport||t.preventDefault()}},this.onMouseUp=t=>{const e=this.getMousePos(t.clientX,t.clientY);this.app.userStop(e)},this.onMouseMove=t=>{const e=this.getMousePos(t.clientX,t.clientY);this.app.userMove(e,!1)},this.onTouchMove=t=>{if(t.changedTouches.length>0){const e=t.changedTouches[0],i=this.getMousePos(e.clientX,e.clientY);this.app.getSettings().mobileScrollSupport?(null!==this.touchPoint&&(Math.abs(this.touchPoint.point.x-i.x)>10||"read"!==this.app.getState())&&t.cancelable&&this.app.userMove(i,!0),"read"!==this.app.getState()&&t.preventDefault()):this.app.userMove(i,!0)}},this.onTouchEnd=t=>{if(t.changedTouches.length>0){const e=t.changedTouches[0],i=this.getMousePos(e.clientX,e.clientY);let s=!1;if(null!==this.touchPoint){const t=i.x-this.touchPoint.point.x,e=Math.abs(i.y-this.touchPoint.point.y);Math.abs(t)>this.swipeDistance&&e<2*this.swipeDistance&&Date.now()-this.touchPoint.time<this.swipeTimeout&&(t>0?this.app.flipPrev(this.touchPoint.point.y<this.app.getRender().getRect().height/2?"top":"bottom"):this.app.flipNext(this.touchPoint.point.y<this.app.getRender().getRect().height/2?"top":"bottom"),s=!0),this.touchPoint=null}this.app.userStop(i,s)}},this.parentElement=t,t.classList.add("stf__parent"),t.insertAdjacentHTML("afterbegin",'<div class="stf__wrapper"></div>'),this.wrapper=t.querySelector(".stf__wrapper"),this.app=e;const s=this.app.getSettings().usePortrait?1:2;t.style.minWidth=i.minWidth*s+"px",t.style.minHeight=i.minHeight+"px","fixed"===i.size&&(t.style.minWidth=i.width*s+"px",t.style.minHeight=i.height+"px"),i.autoSize&&(t.style.width="100%",t.style.maxWidth=2*i.maxWidth+"px"),t.style.display="block",window.addEventListener("resize",this.onResize,!1),this.swipeDistance=i.swipeDistance}destroy(){this.app.getSettings().useMouseEvents&&this.removeHandlers(),this.distElement.remove(),this.wrapper.remove()}getDistElement(){return this.distElement}getWrapper(){return this.wrapper}setOrientationStyle(t){this.wrapper.classList.remove("--portrait","--landscape"),"portrait"===t?(this.app.getSettings().autoSize&&(this.wrapper.style.paddingBottom=this.app.getSettings().height/this.app.getSettings().width*100+"%"),this.wrapper.classList.add("--portrait")):(this.app.getSettings().autoSize&&(this.wrapper.style.paddingBottom=this.app.getSettings().height/(2*this.app.getSettings().width)*100+"%"),this.wrapper.classList.add("--landscape")),this.update()}removeHandlers(){window.removeEventListener("resize",this.onResize),this.distElement.removeEventListener("mousedown",this.onMouseDown),this.distElement.removeEventListener("touchstart",this.onTouchStart),window.removeEventListener("mousemove",this.onMouseMove),window.removeEventListener("touchmove",this.onTouchMove),window.removeEventListener("mouseup",this.onMouseUp),window.removeEventListener("touchend",this.onTouchEnd)}setHandlers(){window.addEventListener("resize",this.onResize,!1),this.app.getSettings().useMouseEvents&&(this.distElement.addEventListener("mousedown",this.onMouseDown),this.distElement.addEventListener("touchstart",this.onTouchStart),window.addEventListener("mousemove",this.onMouseMove),window.addEventListener("touchmove",this.onTouchMove,{passive:!this.app.getSettings().mobileScrollSupport}),window.addEventListener("mouseup",this.onMouseUp),window.addEventListener("touchend",this.onTouchEnd))}getMousePos(t,e){const i=this.distElement.getBoundingClientRect();return{x:t-i.left,y:e-i.top}}checkTarget(t){return!this.app.getSettings().clickEventForward||!["a","button"].includes(t.tagName.toLowerCase())}}class c extends p{constructor(t,e,i,s){super(t,e,i),this.wrapper.insertAdjacentHTML("afterbegin",'<div class="stf__block"></div>'),this.distElement=t.querySelector(".stf__block"),this.items=s;for(const t of s)this.distElement.appendChild(t);this.setHandlers()}clear(){for(const t of this.items)this.parentElement.appendChild(t)}updateItems(t){this.removeHandlers(),this.distElement.innerHTML="";for(const e of t)this.distElement.appendChild(e);this.items=t,this.setHandlers()}update(){this.app.getRender().update()}}class u extends p{constructor(t,e,i){super(t,e,i),this.wrapper.innerHTML='<canvas class="stf__canvas"></canvas>',this.canvas=t.querySelectorAll("canvas")[0],this.distElement=this.canvas,this.resizeCanvas(),this.setHandlers()}resizeCanvas(){const t=getComputedStyle(this.canvas),e=parseInt(t.getPropertyValue("width"),10),i=parseInt(t.getPropertyValue("height"),10);this.canvas.width=e,this.canvas.height=i}getCanvas(){return this.canvas}update(){this.resizeCanvas(),this.app.getRender().update()}}class w extends l{constructor(t,e,i){super(t,e),this.outerShadow=null,this.innerShadow=null,this.hardShadow=null,this.hardInnerShadow=null,this.element=i,this.createShadows()}createShadows(){this.element.insertAdjacentHTML("beforeend",'<div class="stf__outerShadow"></div>\n             <div class="stf__innerShadow"></div>\n             <div class="stf__hardShadow"></div>\n             <div class="stf__hardInnerShadow"></div>'),this.outerShadow=this.element.querySelector(".stf__outerShadow"),this.innerShadow=this.element.querySelector(".stf__innerShadow"),this.hardShadow=this.element.querySelector(".stf__hardShadow"),this.hardInnerShadow=this.element.querySelector(".stf__hardInnerShadow")}clearShadow(){super.clearShadow(),this.outerShadow.style.cssText="display: none",this.innerShadow.style.cssText="display: none",this.hardShadow.style.cssText="display: none",this.hardInnerShadow.style.cssText="display: none"}reload(){this.element.querySelector(".stf__outerShadow")||this.createShadows()}drawHardInnerShadow(){const t=this.getRect(),e=this.shadow.progress>100?200-this.shadow.progress:this.shadow.progress;let i=(100-e)*(2.5*t.pageWidth)/100+20;i>t.pageWidth&&(i=t.pageWidth);let s=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+5).toString(10)};\n            width: ${i}px;\n            height: ${t.height}px;\n            background: linear-gradient(to right,\n                rgba(0, 0, 0, ${this.shadow.opacity*e/100}) 5%,\n                rgba(0, 0, 0, 0) 100%);\n            left: ${t.left+t.width/2}px;\n            transform-origin: 0 0;\n        `;s+=0===this.getDirection()&&this.shadow.progress>100||1===this.getDirection()&&this.shadow.progress<=100?"transform: translate3d(0, 0, 0);":"transform: translate3d(0, 0, 0) rotateY(180deg);",this.hardInnerShadow.style.cssText=s}drawHardOuterShadow(){const t=this.getRect();let e=(100-(this.shadow.progress>100?200-this.shadow.progress:this.shadow.progress))*(2.5*t.pageWidth)/100+20;e>t.pageWidth&&(e=t.pageWidth);let i=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+4).toString(10)};\n            width: ${e}px;\n            height: ${t.height}px;\n            background: linear-gradient(to left, rgba(0, 0, 0, ${this.shadow.opacity}) 5%, rgba(0, 0, 0, 0) 100%);\n            left: ${t.left+t.width/2}px;\n            transform-origin: 0 0;\n        `;i+=0===this.getDirection()&&this.shadow.progress>100||1===this.getDirection()&&this.shadow.progress<=100?"transform: translate3d(0, 0, 0) rotateY(180deg);":"transform: translate3d(0, 0, 0);",this.hardShadow.style.cssText=i}drawInnerShadow(){const t=this.getRect(),e=3*this.shadow.width/4,i=0===this.getDirection()?e:0,s=0===this.getDirection()?"to left":"to right",n=this.convertToGlobal(this.shadow.pos),r=this.shadow.angle+3*Math.PI/2,o=[this.pageRect.topLeft,this.pageRect.topRight,this.pageRect.bottomRight,this.pageRect.bottomLeft];let a="polygon( ";for(const t of o){let e=1===this.getDirection()?{x:-t.x+this.shadow.pos.x,y:t.y-this.shadow.pos.y}:{x:t.x-this.shadow.pos.x,y:t.y-this.shadow.pos.y};e=h.GetRotatedPoint(e,{x:i,y:100},r),a+=e.x+"px "+e.y+"px, "}a=a.slice(0,-2),a+=")";const g=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+10).toString(10)};\n            width: ${e}px;\n            height: ${2*t.height}px;\n            background: linear-gradient(${s},\n                rgba(0, 0, 0, ${this.shadow.opacity}) 5%,\n                rgba(0, 0, 0, 0.05) 15%,\n                rgba(0, 0, 0, ${this.shadow.opacity}) 35%,\n                rgba(0, 0, 0, 0) 100%);\n            transform-origin: ${i}px 100px;\n            transform: translate3d(${n.x-i}px, ${n.y-100}px, 0) rotate(${r}rad);\n            clip-path: ${a};\n            -webkit-clip-path: ${a};\n        `;this.innerShadow.style.cssText=g}drawOuterShadow(){const t=this.getRect(),e=this.convertToGlobal({x:this.shadow.pos.x,y:this.shadow.pos.y}),i=this.shadow.angle+3*Math.PI/2,s=1===this.getDirection()?this.shadow.width:0,n=0===this.getDirection()?"to right":"to left",r=[{x:0,y:0},{x:t.pageWidth,y:0},{x:t.pageWidth,y:t.height},{x:0,y:t.height}];let o="polygon( ";for(const t of r)if(null!==t){let e=1===this.getDirection()?{x:-t.x+this.shadow.pos.x,y:t.y-this.shadow.pos.y}:{x:t.x-this.shadow.pos.x,y:t.y-this.shadow.pos.y};e=h.GetRotatedPoint(e,{x:s,y:100},i),o+=e.x+"px "+e.y+"px, "}o=o.slice(0,-2),o+=")";const a=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+10).toString(10)};\n            width: ${this.shadow.width}px;\n            height: ${2*t.height}px;\n            background: linear-gradient(${n}, rgba(0, 0, 0, ${this.shadow.opacity}), rgba(0, 0, 0, 0));\n            transform-origin: ${s}px 100px;\n            transform: translate3d(${e.x-s}px, ${e.y-100}px, 0) rotate(${i}rad);\n            clip-path: ${o};\n            -webkit-clip-path: ${o};\n        `;this.outerShadow.style.cssText=a}drawLeftPage(){"portrait"!==this.orientation&&null!==this.leftPage&&(1===this.direction&&null!==this.flippingPage&&"hard"===this.flippingPage.getDrawingDensity()?(this.leftPage.getElement().style.zIndex=(this.getSettings().startZIndex+5).toString(10),this.leftPage.setHardDrawingAngle(180+this.flippingPage.getHardAngle()),this.leftPage.draw(this.flippingPage.getDrawingDensity())):this.leftPage.simpleDraw(0))}drawRightPage(){null!==this.rightPage&&(0===this.direction&&null!==this.flippingPage&&"hard"===this.flippingPage.getDrawingDensity()?(this.rightPage.getElement().style.zIndex=(this.getSettings().startZIndex+5).toString(10),this.rightPage.setHardDrawingAngle(180+this.flippingPage.getHardAngle()),this.rightPage.draw(this.flippingPage.getDrawingDensity())):this.rightPage.simpleDraw(1))}drawBottomPage(){if(null===this.bottomPage)return;const t=null!=this.flippingPage?this.flippingPage.getDrawingDensity():null;"portrait"===this.orientation&&1===this.direction||(this.bottomPage.getElement().style.zIndex=(this.getSettings().startZIndex+3).toString(10),this.bottomPage.draw(t))}drawFrame(){this.clear(),this.drawLeftPage(),this.drawRightPage(),this.drawBottomPage(),null!=this.flippingPage&&(this.flippingPage.getElement().style.zIndex=(this.getSettings().startZIndex+5).toString(10),this.flippingPage.draw()),null!=this.shadow&&null!==this.flippingPage&&("soft"===this.flippingPage.getDrawingDensity()?(this.drawOuterShadow(),this.drawInnerShadow()):(this.drawHardOuterShadow(),this.drawHardInnerShadow()))}clear(){for(const t of this.app.getPageCollection().getPages())t!==this.leftPage&&t!==this.rightPage&&t!==this.flippingPage&&t!==this.bottomPage&&(t.getElement().style.cssText="display: none"),t.getTemporaryCopy()!==this.flippingPage&&t.hideTemporaryCopy()}update(){super.update(),null!==this.rightPage&&this.rightPage.setOrientation(1),null!==this.leftPage&&this.leftPage.setOrientation(0)}}class x{constructor(){this._default={startPage:0,size:"fixed",width:0,height:0,minWidth:0,maxWidth:0,minHeight:0,maxHeight:0,drawShadow:!0,flippingTime:1e3,usePortrait:!0,startZIndex:0,autoSize:!0,maxShadowOpacity:1,showCover:!1,mobileScrollSupport:!0,swipeDistance:30,clickEventForward:!0,useMouseEvents:!0,showPageCorners:!0,disableFlipByClick:!1}}getSettings(t){const e=this._default;if(Object.assign(e,t),"stretch"!==e.size&&"fixed"!==e.size)throw new Error('Invalid size type. Available only "fixed" and "stretch" value');if(e.width<=0||e.height<=0)throw new Error("Invalid width or height");if(e.flippingTime<=0)throw new Error("Invalid flipping time");return"stretch"===e.size?(e.minWidth<=0&&(e.minWidth=100),e.maxWidth<e.minWidth&&(e.maxWidth=2e3),e.minHeight<=0&&(e.minHeight=100),e.maxHeight<e.minHeight&&(e.maxHeight=2e3)):(e.minWidth=e.width,e.maxWidth=e.width,e.minHeight=e.height,e.maxHeight=e.height),e}}!function(t,e){void 0===e&&(e={});var i=e.insertAt;if(t&&"undefined"!=typeof document){var s=document.head||document.getElementsByTagName("head")[0],n=document.createElement("style");n.type="text/css","top"===i&&s.firstChild?s.insertBefore(n,s.firstChild):s.appendChild(n),n.styleSheet?n.styleSheet.cssText=t:n.appendChild(document.createTextNode(t))}}(".stf__parent {\n  position: relative;\n  display: block;\n  box-sizing: border-box;\n  transform: translateZ(0);\n\n  -ms-touch-action: pan-y;\n  touch-action: pan-y;\n}\n\n.sft__wrapper {\n  position: relative;\n  width: 100%;\n  box-sizing: border-box;\n}\n\n.stf__parent canvas {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n}\n\n.stf__block {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  box-sizing: border-box;\n  perspective: 2000px;\n}\n\n.stf__item {\n  display: none;\n  position: absolute;\n  transform-style: preserve-3d;\n}\n\n.stf__outerShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.stf__innerShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.stf__hardShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.stf__hardInnerShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}");t.PageFlip=class extends class{constructor(){this.events=new Map}on(t,e){return this.events.has(t)?this.events.get(t).push(e):this.events.set(t,[e]),this}off(t){this.events.delete(t)}trigger(t,e,i=null){if(this.events.has(t))for(const s of this.events.get(t))s({data:i,object:e})}}{constructor(t,e){super(),this.isUserTouch=!1,this.isUserMove=!1,this.setting=null,this.pages=null,this.setting=(new x).getSettings(e),this.block=t}destroy(){this.ui.destroy(),this.block.remove()}update(){this.render.update(),this.pages.show()}loadFromImages(t){this.ui=new u(this.block,this,this.setting);const e=this.ui.getCanvas();this.render=new d(this,this.setting,e),this.flipController=new g(this.render,this),this.pages=new n(this,this.render,t),this.pages.load(),this.render.start(),this.pages.show(this.setting.startPage),setTimeout(()=>{this.ui.update(),this.trigger("init",this,{page:this.setting.startPage,mode:this.render.getOrientation()})},1)}loadFromHTML(t){this.ui=new c(this.block,this,this.setting,t),this.render=new w(this,this.setting,this.ui.getDistElement()),this.flipController=new g(this.render,this),this.pages=new o(this,this.render,this.ui.getDistElement(),t),this.pages.load(),this.render.start(),this.pages.show(this.setting.startPage),setTimeout(()=>{this.ui.update(),this.trigger("init",this,{page:this.setting.startPage,mode:this.render.getOrientation()})},1)}updateFromImages(t){const e=this.pages.getCurrentPageIndex();this.pages.destroy(),this.pages=new n(this,this.render,t),this.pages.load(),this.pages.show(e),this.trigger("update",this,{page:e,mode:this.render.getOrientation()})}updateFromHtml(t){const e=this.pages.getCurrentPageIndex();this.pages.destroy(),this.pages=new o(this,this.render,this.ui.getDistElement(),t),this.pages.load(),this.ui.updateItems(t),this.render.reload(),this.pages.show(e),this.trigger("update",this,{page:e,mode:this.render.getOrientation()})}clear(){this.pages.destroy(),this.ui.clear()}turnToPrevPage(){this.pages.showPrev()}turnToNextPage(){this.pages.showNext()}turnToPage(t){this.pages.show(t)}flipNext(t="top"){this.flipController.flipNext(t)}flipPrev(t="top"){this.flipController.flipPrev(t)}flip(t,e="top"){this.flipController.flipToPage(t,e)}updateState(t){this.trigger("changeState",this,t)}updatePageIndex(t){this.trigger("flip",this,t)}updateOrientation(t){this.ui.setOrientationStyle(t),this.update(),this.trigger("changeOrientation",this,t)}getPageCount(){return this.pages.getPageCount()}getCurrentPageIndex(){return this.pages.getCurrentPageIndex()}getPage(t){return this.pages.getPage(t)}getRender(){return this.render}getFlipController(){return this.flipController}getOrientation(){return this.render.getOrientation()}getBoundsRect(){return this.render.getRect()}getSettings(){return this.setting}getUI(){return this.ui}getState(){return this.flipController.getState()}getPageCollection(){return this.pages}startUserTouch(t){this.mousePosition=t,this.isUserTouch=!0,this.isUserMove=!1}userMove(t,e){this.isUserTouch||e||!this.setting.showPageCorners?this.isUserTouch&&h.GetDistanceBetweenTwoPoint(this.mousePosition,t)>5&&(this.isUserMove=!0,this.flipController.fold(t)):this.flipController.showCorner(t)}userStop(t,e=!1){this.isUserTouch&&(this.isUserTouch=!1,e||(this.isUserMove?this.flipController.stopMove():this.flipController.flip(t)))}},Object.defineProperty(t,"__esModule",{value:!0})}));
+
+</script>
+<script>
+(function(){
+  var stage=document.getElementById('stage'), book=document.getElementById('book');
+  var pages=book.querySelectorAll('.page'), total=pages.length, count=document.getElementById('count');
+  if(!window.St||!window.St.PageFlip){ stage.classList.add('flat'); return; }
+  var pf;
+  try{
+    pf=new St.PageFlip(book,{
+      width:420,height:600,size:"stretch",minWidth:380,maxWidth:520,minHeight:540,maxHeight:760,
+      showCover:true,usePortrait:false,mobileScrollSupport:true,maxShadowOpacity:.45,flippingTime:900
+    });
+    pf.loadFromHTML(pages);
+  }catch(e){ stage.classList.add('flat'); return; }
+  function upd(){ count.textContent=(pf.getCurrentPageIndex()+1)+" / "+total; }
+  pf.on('flip',upd); pf.on('changeOrientation',upd); upd();
+  document.getElementById('prev').onclick=function(){pf.flipPrev();};
+  document.getElementById('next').onclick=function(){pf.flipNext();};
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight')pf.flipNext(); if(e.key==='ArrowLeft')pf.flipPrev();
+  });
+})();
+</script>
+
+</body>
+</html>
