@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=920">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>El próximo capítulo de Celia</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -581,7 +581,7 @@ td.h i{font-style:normal;color:var(--line)}
     <span id="count">1 / 24</span>
     <button type="button" id="next">Siguiente ›</button>
   </nav>
-  <p class="hint">Arrastra la esquina de la página, tócala o usa los botones. En el móvil, gíralo para verlo más grande.</p>
+  <p class="hint">Arrastra la esquina de la página, tócala o usa los botones.</p>
 </div>
 
 <script>
@@ -616,14 +616,22 @@ SOFTWARE.
   var stage=document.getElementById('stage'), book=document.getElementById('book');
   var pages=book.querySelectorAll('.page'), total=pages.length, count=document.getElementById('count');
   if(!window.St||!window.St.PageFlip){ stage.classList.add('flat'); return; }
+  function isVertical(){return window.innerHeight>window.innerWidth||window.innerHeight<520;}
+  var vertical=isVertical();
+  if(vertical){ book.style.maxWidth=Math.min(560,window.innerWidth-32)+'px'; }
   var pf;
   try{
     pf=new St.PageFlip(book,{
-      width:420,height:600,size:"stretch",minWidth:380,maxWidth:520,minHeight:540,maxHeight:760,
-      showCover:true,usePortrait:false,mobileScrollSupport:true,maxShadowOpacity:.45,flippingTime:900
+      width:420,height:(vertical?760:600),size:"stretch",minWidth:300,maxWidth:560,minHeight:420,maxHeight:1020,
+      showCover:true,usePortrait:true,mobileScrollSupport:true,maxShadowOpacity:.45,flippingTime:900,
+      startPage:(function(){try{return +sessionStorage.getItem('cap-page')||0}catch(e){return 0}})()
     });
     pf.loadFromHTML(pages);
   }catch(e){ stage.classList.add('flat'); return; }
+  pf.on('flip',function(e){try{sessionStorage.setItem('cap-page',e.data)}catch(_){}});
+  window.addEventListener('resize',function(){
+    if(isVertical()!==vertical){ location.reload(); }
+  });
   function upd(){ count.textContent=(pf.getCurrentPageIndex()+1)+" / "+total; }
   pf.on('flip',upd); pf.on('changeOrientation',upd); upd();
   document.getElementById('prev').onclick=function(){pf.flipPrev();};
